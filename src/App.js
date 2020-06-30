@@ -21,7 +21,10 @@ import {
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
+// To share array of timezones to the modal
 export const TimezonesContext = React.createContext();
+// To toggle the time format
+export const TimeFormatContext = React.createContext();
 
 const theme = createMuiTheme({
   palette: {
@@ -40,10 +43,10 @@ function App() {
   const [twentyFoHourFormat, setTwentyFoHourFormat] = useState(false);
 
   // Can only update base for now 
-  const [base, setBase] = useState('Australia/Sydney');
+  const [base, setBase] = useState('Asia/Kolkata');
 
   // Cannot update properly yet
-  const [tracked, setTracked] = useState(['Asia/Kolkata']);
+  const [tracked, setTracked] = useState(['America/Los_Angeles', 'Europe/Amsterdam', 'Asia/Hong_Kong']);
 
   const [timezones, setTimezones] = useState([]);
   // console.log("Time zones", timezones);
@@ -66,43 +69,43 @@ function App() {
         />
         <Box pt={10} style={{ backgroundColor: '#eee', height: '100vh' }}>
           <TimezonesContext.Provider value={timezones}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <Container>
-                <TimeCard
-                  base={true}
-                  timezone={base}
-                  updateTimezone={setBase}
-                // onChange={e => console.log(e.target.value)}
-                />
-                <Box mt={4}>
-                  <Grid container spacing={6}>
-                    {tracked.map((item, index) => (
-                      <Grid item xs={12} md={6} key={index}>
-                        <TimeCard
-
-                          timezone={item}
-                          updateTimezone={setBase}
-                        // onChange={e => console.log(e.target.value)}
-                        />
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Box>
-                <Fab
-                  style={{
-                    margin: 0,
-                    top: 'auto',
-                    right: 30,
-                    bottom: 40,
-                    left: 'auto',
-                    position: 'fixed',
-                  }}
-                  color="secondary"
-                  aria-label="Add Timezone">
-                  <AddIcon />
-                </Fab>
-              </Container>
-            </MuiPickersUtilsProvider>
+            <TimeFormatContext.Provider value={twentyFoHourFormat}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Container>
+                  <TimeCard
+                    base={true}
+                    timezone={base}
+                    updateTimezone={setBase}
+                  />
+                  <Box mt={4}>
+                    <Grid container spacing={6}>
+                      {tracked.map((item, index) => (
+                        <Grid item xs={12} md={6} key={index}>
+                          <TimeCard
+                            timezone={item}
+                          // Need to implement
+                          // updateTimezone={setTracked}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                  <Fab
+                    style={{
+                      margin: 0,
+                      top: 'auto',
+                      right: 30,
+                      bottom: 40,
+                      left: 'auto',
+                      position: 'fixed',
+                    }}
+                    color="secondary"
+                    aria-label="Add Timezone">
+                    <AddIcon />
+                  </Fab>
+                </Container>
+              </MuiPickersUtilsProvider>
+            </TimeFormatContext.Provider>
           </TimezonesContext.Provider>
         </Box>
       </ThemeProvider>
