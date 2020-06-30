@@ -36,17 +36,17 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  // No functionality yet
   const [twentyFoHourFormat, setTwentyFoHourFormat] = useState(false);
 
-  const [base, setBase] = useState({
-    timezone: '',
-    date: new Date()
-  });
+  // Can only update base for now 
+  const [base, setBase] = useState('Australia/Sydney');
 
-  const [tracked, setTracked] = useState([base, base, base, base]);
+  // Cannot update properly yet
+  const [tracked, setTracked] = useState(['Asia/Kolkata']);
 
   const [timezones, setTimezones] = useState([]);
-  console.log("Time zones", timezones);
+  // console.log("Time zones", timezones);
 
   useEffect(function fetchTimezones() {
     fetch("http://worldtimeapi.org/api/timezone")
@@ -69,16 +69,20 @@ function App() {
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <Container>
                 <TimeCard
-                  value={base.date}
-                  onChange={e => console.log(e.target.value)}
+                  base={true}
+                  timezone={base}
+                  updateTimezone={setBase}
+                // onChange={e => console.log(e.target.value)}
                 />
                 <Box mt={4}>
                   <Grid container spacing={6}>
                     {tracked.map((item, index) => (
                       <Grid item xs={12} md={6} key={index}>
                         <TimeCard
-                          value={item.date}
-                          onChange={setTracked}
+
+                          timezone={item}
+                          updateTimezone={setBase}
+                        // onChange={e => console.log(e.target.value)}
                         />
                       </Grid>
                     ))}

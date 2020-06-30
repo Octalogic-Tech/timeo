@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import { DateTimePicker } from '@material-ui/pickers';
 
@@ -16,8 +16,44 @@ import Box from '@material-ui/core/Box';
 
 import { TimezonesContext } from '../App'
 
-const TimeCard = ({ value, onChange }) => {
+const convertTime = tz => {
+  let time = new Date().toLocaleString("en-US", { timeZone: tz });
+  // let localTime = (new Date(time)).toLocaleString();
+  return time;
+}
+
+const TimeCard = ({ timezone, updateTimezone, base }) => {
   const [open, setOpen] = useState(false);
+
+  const [abbreviation, setAbbreviation] = useState('');
+  const [utcOffset, setUtcOffset] = useState('');
+  const [textfieldValue, setTextfieldValue] = useState('');
+  let night = false;
+  // console.log("teectxt ", textfieldValue)
+
+  const cardStyles = {};
+
+  let time = convertTime(timezone);
+  let timeString = new Date(time).toLocaleTimeString();
+
+  // Check if night time
+  console.log("time: ", timeString);
+  if (timeString >= "18:00:00" || timeString < "06:00:00") {
+    night = true;
+    cardStyles.backgroundColor = "#343434";
+    cardStyles.color = "#fff";
+  }
+
+  useEffect(function getTimezoneDetails() {
+    fetch(`http://worldtimeapi.org/api/timezone/${timezone}`)
+      .then(res => res.json())
+      .then(data => {
+        // console.log("Fetched data", data);
+        setAbbreviation(data.abbreviation)
+        setUtcOffset(data.utc_offset);
+      })
+      .catch(err => console.error(err));
+  }, [timezone])
 
   const handleOpen = () => {
     setOpen(true);
@@ -26,6 +62,10 @@ const TimeCard = ({ value, onChange }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const onTimezoneChange = (event, values) => {
+    setTextfieldValue(values);
+  }
 
   const allTimezones = useContext(TimezonesContext);
 
@@ -55,13 +95,26 @@ const TimeCard = ({ value, onChange }) => {
           options={allTimezones}
           getOptionLabel={(option) => option}
           style={{ width: 300 }}
+          onChange={onTimezoneChange}
           renderInput={(params) => <TextField {...params} label="City Name" />}
         />
         <Box display="flex" justifyContent="space-between">
-          <Button color="secondary">DELETE</Button>
+          <Button color="secondary" disabled={base}>
+            DELETE
+          </Button>
           <div>
-            <Button style={{ color: 'grey' }}>CANCEL</Button>
-            <Button color="primary">UPDATE</Button>
+            <Button
+              style={{ color: 'grey' }}
+              onClick={handleClose}
+            >
+              CANCEL
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => { updateTimezone(textfieldValue); handleClose(); }}
+            >
+              UPDATE
+            </Button>
           </div>
         </Box>
       </CardContent>
@@ -70,44 +123,52 @@ const TimeCard = ({ value, onChange }) => {
 
 
   return (
-    <Card >
+    <Card style={cardStyles}>
       <CardContent>
         <Grid container align="center">
           <Grid item xs={12} sm={6}
             onClick={handleOpen}
-            style={{ borderRight: '1px solid black' }}>
+            style={{
+              borderRight: '1px solid black',
+              ':hover': {
+                cursor: 'pointer'
+              }
+            }}>
             <Typography
               variant="h4"
             >
-              Mumbai
+              {timezone}
             </Typography>
             <Typography
               variant="body1"
               component="p"
             >
-              Indian Standard Time (IST)
+              {abbreviation}
             </Typography>
             <Typography
-              color="textSecondary"
+              color={night ? "" : "textSecondary"}
               variant="body2"
               component="p"
             >
-              UTC +5:30
+              UTC {utcOffset}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <DateTimePicker
-              value={value}
-              onChange={onChange}
-            />
+            <Box display="flex" height={1} justifyContent="center" alignItems="center">
+              <DateTimePicker
+                style={{ color: '#fff' }}
+                value={new Date(time)}
+              // onChange={onChange}
+              />
+            </Box>
           </Grid>
         </Grid>
       </CardContent>
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
+        aria-labelledby="Update Timezone"
+        aria-describedby="Modal to update the selected timezone card"
       >
         {body}
       </Modal>
