@@ -30,7 +30,7 @@ const Navbar = ({ twentyFoHourFormat, setTwentyFoHourFormat }) => {
 
   return (
     <AppBar
-      color="primary"
+      style={{ backgroundColor: "#ffffff", color: "#000" }}
     >
       <Toolbar >
         <Box
