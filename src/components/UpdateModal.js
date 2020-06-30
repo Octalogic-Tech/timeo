@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 
 // For Modal
 import Modal from '@material-ui/core/Modal';
@@ -19,7 +19,7 @@ const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base }) =>
   const allTimezones = useContext(TimezonesContext);
 
   const onTimezoneChange = (event, values) => {
-    console.log("values", values);
+    // console.log("values", values);
     setTextfieldValue(values);
   }
 
@@ -65,7 +65,10 @@ const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base }) =>
             </Button>
             <Button
               color="primary"
-              onClick={() => { updateTimezone(textfieldValue); handleClose(); }}
+              onClick={() => {
+                updateTimezone(textfieldValue);
+                handleClose();
+              }}
             >
               UPDATE
             </Button>
