@@ -90,7 +90,14 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
 
       return updatedTimezones;
     });
-  }
+  };
+
+  useEffect(function updateTimeEveryMinute() {
+    const interval = setInterval(() => {
+      setTime(convertTime(timezone));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [timezone]);
 
   useEffect(function getTimezoneDetails() {
     fetch(`https://worldtimeapi.org/api/timezone/${timezone}`)
