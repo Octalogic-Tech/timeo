@@ -77,6 +77,21 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
     });
   }
 
+  const handleDeleteTimezone = () => {
+    updateTimezone(prevState => {
+      let updatedTimezones = [];
+
+      // Skip the timezone where id matches
+      prevState.forEach(item => {
+        if (item.id === TCId) { }
+        else
+          updatedTimezones.push(item);
+      });
+
+      return updatedTimezones;
+    });
+  }
+
   useEffect(function getTimezoneDetails() {
     fetch(`https://worldtimeapi.org/api/timezone/${timezone}`)
       .then(res => res.json())
@@ -153,7 +168,7 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
         handleOpen={handleOpen}
         handleClose={handleClose}
         updateTimezone={base ? updateTimezone : handleEditTimezone}
-        TCId={TCId}
+        deleteTimezone={handleDeleteTimezone}
         base={base}
       />
     </Card>

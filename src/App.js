@@ -54,7 +54,6 @@ function App() {
       {console.log(item)}
       <TimeCard
         timezone={item.timezone}
-        // Need to implement
         TCId={item.id}
         updateTimezone={setTracked}
       />

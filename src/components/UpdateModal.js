@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box';
 
 import { TimezonesContext } from '../App'
 
-const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base, TCId }) => {
+const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base, deleteTimezone }) => {
   const [textfieldValue, setTextfieldValue] = useState('');
   const allTimezones = useContext(TimezonesContext);
 
@@ -53,7 +53,10 @@ const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base, TCId
           renderInput={(params) => <TextField {...params} label="City Name" />}
         />
         <Box display="flex" justifyContent="space-between">
-          <Button color="secondary" disabled={base}>
+          <Button color="secondary"
+            disabled={base}
+            onClick={deleteTimezone}
+          >
             DELETE
           </Button>
           <div>
