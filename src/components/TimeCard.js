@@ -151,7 +151,7 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
               height={1}
             >
               <Typography
-                variant={base ? "h5" : "h6"}
+                variant={base ? "h4" : "h5"}
               >
                 {title || "Loading"}
               </Typography>
@@ -173,6 +173,7 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
           <Grid item xs={12} sm={6}>
             <Box
               display="flex"
+              flexDirection="column"
               justifyContent="center"
               alignItems="center"
               height={1}
@@ -182,7 +183,16 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
                 value={time}
                 onChange={updateTime}
                 ampm={!AM_PM}
-                inputVariant="outlined"
+                format={!AM_PM ? "hh:mm A" : "HH:mm"}
+                TextFieldComponent={TimeTextField}
+              />
+              <br />
+              <DateTimePicker
+                value={time}
+                onChange={updateTime}
+                ampm={!AM_PM}
+                format="Do MMMM YYYY"
+                TextFieldComponent={DateTextField}
               />
             </Box>
           </Grid>
@@ -200,5 +210,33 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
     </Card>
   )
 }
+
+const TimeTextField = function (props) {
+  return (
+    <Typography
+      onClick={props.onClick} // do not override
+      id={props.id} // do not override
+      disabled={props.disabled} // do not override
+      {...props.inputProps} // do not override
+      variant="h4"
+    >
+      {props.value}
+    </Typography>
+  );
+};
+
+const DateTextField = function (props) {
+  return (
+    <Typography
+      onClick={props.onClick} // do not override
+      id={props.id} // do not override
+      disabled={props.disabled} // do not override
+      {...props.inputProps} // do not override
+      variant="body1"
+    >
+      {props.value}
+    </Typography>
+  );
+};
 
 export default TimeCard

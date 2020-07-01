@@ -55,6 +55,7 @@ const AddTimezone = ({ setTracked }) => {
                 handleClose={handleClose}
                 updateTimezone={handleAddTimezone}
                 base={true}
+                add={true}
             />
         </Fragment>
     )

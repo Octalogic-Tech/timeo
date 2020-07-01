@@ -15,7 +15,7 @@ import Box from '@material-ui/core/Box';
 import { TimezonesContext } from '../App'
 
 const UpdateModal = ({ open, handleOpen, handleClose,
-  updateTimezone, base, deleteTimezone }) => {
+  updateTimezone, base, deleteTimezone, add }) => {
 
   const [textfieldValue, setTextfieldValue] = useState('');
   const allTimezones = useContext(TimezonesContext);
@@ -28,8 +28,8 @@ const UpdateModal = ({ open, handleOpen, handleClose,
   const body = (
     <Card style={{
       backgroundColor: '#fff',
-      maxWidth: '400px',
-      padding: '1rem',
+      maxWidth: '504px',
+      padding: '0 1rem',
       position: 'absolute',
       top: `50%`,
       left: `50%`,
@@ -39,7 +39,7 @@ const UpdateModal = ({ open, handleOpen, handleClose,
     }}>
       <CardContent>
         <Typography variant="h6">
-          Add a location
+          {add ? "Add a location" : "Change location"}
         </Typography>
         <br />
         <Typography variant="body1">
@@ -47,14 +47,12 @@ const UpdateModal = ({ open, handleOpen, handleClose,
           timezone you would like to add
         </Typography>
         <Autocomplete
-          id="combo-box-demo"
           options={allTimezones}
           getOptionLabel={(option) => option}
-          style={{ width: 300 }}
           onChange={onTimezoneChange}
           renderInput={(params) => <TextField {...params} label="City Name" />}
         />
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" pt={2}>
           <Button color="secondary"
             disabled={base}
             onClick={() => {
@@ -78,7 +76,7 @@ const UpdateModal = ({ open, handleOpen, handleClose,
                 handleClose();
               }}
             >
-              UPDATE
+              {add ? "ADD" : "UPDATE"}
             </Button>
           </div>
         </Box>
