@@ -126,6 +126,9 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
         setUtcOffset(data.utc_offset);
       })
       .catch(err => console.error(err));
+
+    // Update time once timezone changes
+    setTime(momentTZ.tz(timezone));
   }, [timezone])
 
   const handleOpen = () => {

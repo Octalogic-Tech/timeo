@@ -28,6 +28,7 @@ const UpdateModal = ({ open, handleOpen, handleClose,
   const body = (
     <Card style={{
       backgroundColor: '#fff',
+      minWidth: '300px',
       maxWidth: '504px',
       padding: '0 1rem',
       position: 'absolute',
@@ -49,10 +50,11 @@ const UpdateModal = ({ open, handleOpen, handleClose,
         <Autocomplete
           options={allTimezones}
           getOptionLabel={(option) => option}
+          fullWidth={true}
           onChange={onTimezoneChange}
           renderInput={(params) => <TextField {...params} label="City Name" />}
         />
-        <Box display="flex" justifyContent="space-between" pt={2}>
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between" pt={2}>
           <Button color="secondary"
             disabled={base}
             onClick={() => {
