@@ -9,16 +9,17 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+import moment from 'moment'
+import momentTZ from 'moment-timezone'
+import accurateInterval from 'accurate-interval'
+
 import UpdateModal from './UpdateModal';
 
 // Context for AM/PM toggle
 import { TimeFormatContext } from '../App'
 
-const convertTime = tz => {
-  let time = new Date().toLocaleString("en-US", { timeZone: tz });
-  // let localTime = (new Date(time)).toLocaleString();
-  return time;
-}
+// Context for time offset
+import { timeOffsetContext } from '../App'
 
 const formatTitle = tz => {
   // Splits timezone string
@@ -36,9 +37,10 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
 
   const [abbreviation, setAbbreviation] = useState('');
   const [utcOffset, setUtcOffset] = useState('');
-  const [time, setTime] = useState(convertTime(timezone));
+  const [time, setTime] = useState(momentTZ.tz(timezone));
 
   const AM_PM = useContext(TimeFormatContext);
+  const [offset, setOffset] = useContext(timeOffsetContext);
 
   // The name of the place
   let title = formatTitle(timezone);
@@ -46,10 +48,11 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
   let night = false;
   let cardStyles = {};
   let borderStyle = { borderRight: '1px solid #000', }
+
   // Check if night time
-  let timeString = new Date(time).toLocaleTimeString();
+
   // console.log("time: ", timeString);
-  if (timeString >= "18:00:00" || timeString < "06:00:00") {
+  if (time.get('hour') >= 18 || time.get('hour') <= 5) {
     night = true;
     cardStyles.backgroundColor = "#343434";
     cardStyles.color = "#fff";
@@ -59,6 +62,13 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
   const matches = useMediaQuery('(max-width:600px)');
   if (matches) {
     borderStyle = {};
+  }
+
+  const updateTime = value => {
+    let diff = value.diff(time);
+    setOffset(diff);
+    // Didnt update value here as it would 
+    // effectively update time twice
   }
 
   const handleEditTimezone = value => {
@@ -92,12 +102,21 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
     });
   };
 
+  useEffect(function updateTimeWithOffset() {
+    let newTime = time.add(offset, 'ms');
+    setTime(newTime);
+    // Incase of re-renders
+    setOffset(0);
+  }, [offset, time, setOffset]);
+
   useEffect(function updateTimeEveryMinute() {
-    const interval = setInterval(() => {
-      setTime(convertTime(timezone));
+    const interval = accurateInterval(() => {
+      let updatedTime = moment(time.add(1, 'm'));
+      setTime(updatedTime);
     }, 60000);
-    return () => clearInterval(interval);
-  }, [timezone]);
+
+    return () => interval.clear();
+  }, [time]);
 
   useEffect(function getTimezoneDetails() {
     fetch(`https://worldtimeapi.org/api/timezone/${timezone}`)
@@ -160,8 +179,8 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
               p={3}
             >
               <DateTimePicker
-                value={new Date(time)}
-                onChange={setTime}
+                value={time}
+                onChange={updateTime}
                 ampm={!AM_PM}
                 inputVariant="outlined"
               />

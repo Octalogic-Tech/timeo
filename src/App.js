@@ -24,6 +24,8 @@ export const TimezonesContext = React.createContext();
 // To toggle the time format
 export const TimeFormatContext = React.createContext();
 
+export const timeOffsetContext = React.createContext();
+
 const theme = createMuiTheme(themeConfig);
 
 function App() {
@@ -43,6 +45,9 @@ function App() {
 
   // Array of all timezones supported by the API
   const [timezones, setTimezones] = useState([]);
+
+  // For change in time/date tracking
+  const [offset, setOffset] = useState(0);
 
   // Fetch array of timezones
   useEffect(function fetchTimezones() {
@@ -84,27 +89,29 @@ function App() {
 
         <TimezonesContext.Provider value={timezones}>
           <TimeFormatContext.Provider value={twentyFoHourFormat}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <Container>
+            <timeOffsetContext.Provider value={[offset, setOffset]}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Container>
 
-                <TimeCard
-                  base={true}
-                  timezone={base}
-                  updateTimezone={setBase}
-                />
+                  <TimeCard
+                    base={true}
+                    timezone={base}
+                    updateTimezone={setBase}
+                  />
 
-                <Box mt={4}>
-                  <Grid container spacing={6}>
-                    {trackedTimezones}
-                  </Grid>
-                </Box>
+                  <Box mt={4}>
+                    <Grid container spacing={6}>
+                      {trackedTimezones}
+                    </Grid>
+                  </Box>
 
-                <AddTimezone
-                  setTracked={setTracked}
-                />
+                  <AddTimezone
+                    setTracked={setTracked}
+                  />
 
-              </Container>
-            </MuiPickersUtilsProvider>
+                </Container>
+              </MuiPickersUtilsProvider>
+            </timeOffsetContext.Provider>
           </TimeFormatContext.Provider>
         </TimezonesContext.Provider>
       </Box>
