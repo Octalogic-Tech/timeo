@@ -34,12 +34,10 @@ function App() {
   const [base, setBase] = useState('Asia/Kolkata');
 
   // Cannot update properly yet
-  const [tracked, setTracked] = useState([
-    'America/Los_Angeles',
-    'Europe/Amsterdam',
-    'Asia/Hong_Kong'
-  ]);
+  // Structure - [{id: 1, timezone: 'Asia/Kolkata'}]
+  const [tracked, setTracked] = useState([]);
 
+  // Array of all timezones supported by the API
   const [timezones, setTimezones] = useState([]);
 
   useEffect(function fetchTimezones() {
@@ -53,10 +51,12 @@ function App() {
 
   let trackedTimezones = tracked.map((item, index) => (
     <Grid item xs={12} md={6} key={index}>
+      {console.log(item)}
       <TimeCard
-        timezone={item}
+        timezone={item.timezone}
         // Need to implement
-        updateTimezone={setBase}
+        TCId={item.id}
+        updateTimezone={setTracked}
       />
     </Grid>
   ));

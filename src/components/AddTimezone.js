@@ -19,7 +19,15 @@ const AddTimezone = ({ setTracked }) => {
     };
 
     const handleAddTimezone = value => {
-        setTracked(prevState => ([...prevState, value]));
+        setTracked(prevState => {
+            let id = 0;
+            // Get new id for new tracked time zone.
+            if (prevState.length > 0) {
+                id = prevState[prevState.length - 1].id + 1;
+            }
+
+            return [...prevState, { id: id, timezone: value }];
+        });
     }
 
     const styles = {
@@ -46,6 +54,7 @@ const AddTimezone = ({ setTracked }) => {
                 handleOpen={handleOpen}
                 handleClose={handleClose}
                 updateTimezone={handleAddTimezone}
+                base={true}
             />
         </Fragment>
     )

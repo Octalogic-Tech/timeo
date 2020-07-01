@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import UpdateModal from './UpdateModal';
 
@@ -29,7 +30,7 @@ const formatTitle = tz => {
   return title;
 }
 
-const TimeCard = ({ timezone, updateTimezone, base }) => {
+const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
   // For modal toggle
   const [open, setOpen] = useState(false);
 
@@ -43,8 +44,8 @@ const TimeCard = ({ timezone, updateTimezone, base }) => {
   let title = formatTitle(timezone);
 
   let night = false;
-  const cardStyles = {};
-
+  let cardStyles = {};
+  let borderStyle = { borderRight: '1px solid #000', }
   // Check if night time
   let timeString = new Date(time).toLocaleTimeString();
   // console.log("time: ", timeString);
@@ -52,6 +53,28 @@ const TimeCard = ({ timezone, updateTimezone, base }) => {
     night = true;
     cardStyles.backgroundColor = "#343434";
     cardStyles.color = "#fff";
+    borderStyle.borderRight = '1px solid #fff';
+  }
+
+  const matches = useMediaQuery('(max-width:600px)');
+  if (matches) {
+    borderStyle = {};
+  }
+
+  const handleEditTimezone = value => {
+    updateTimezone(prevState => {
+      let updatedTimezones = [];
+
+      // Update the timezone where id matches
+      prevState.forEach(item => {
+        if (item.id === TCId)
+          updatedTimezones.push({ id: item.id, timezone: value });
+        else
+          updatedTimezones.push(item);
+      });
+
+      return updatedTimezones;
+    });
   }
 
   useEffect(function getTimezoneDetails() {
@@ -78,30 +101,33 @@ const TimeCard = ({ timezone, updateTimezone, base }) => {
         <Grid container align="center">
           <Grid item xs={12} sm={6}
             onClick={handleOpen}
-            style={{
-              borderRight: '1px solid black',
-              ':hover': {
-                cursor: 'pointer'
-              }
-            }}>
-            <Typography
-              variant={base ? "h5" : "h6"}
+            style={borderStyle}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              height={1}
             >
-              {title || "Loading"}
-            </Typography>
-            <Typography
-              variant="body1"
-              component="p"
-            >
-              {abbreviation || "Loading"}
-            </Typography>
-            <Typography
-              color={night ? "inherit" : "textSecondary"}
-              variant="body2"
-              component="p"
-            >
-              UTC {utcOffset || "Loading"}
-            </Typography>
+              <Typography
+                variant={base ? "h5" : "h6"}
+              >
+                {title || "Loading"}
+              </Typography>
+              <Typography
+                variant="body1"
+                component="p"
+              >
+                {abbreviation || "Loading"}
+              </Typography>
+              <Typography
+                color={night ? "inherit" : "textSecondary"}
+                variant="body2"
+                component="p"
+              >
+                UTC {utcOffset || "Loading"}
+              </Typography>
+            </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box
@@ -115,6 +141,7 @@ const TimeCard = ({ timezone, updateTimezone, base }) => {
                 value={new Date(time)}
                 onChange={setTime}
                 ampm={!AM_PM}
+                inputVariant="outlined"
               />
             </Box>
           </Grid>
@@ -125,7 +152,8 @@ const TimeCard = ({ timezone, updateTimezone, base }) => {
         open={open}
         handleOpen={handleOpen}
         handleClose={handleClose}
-        updateTimezone={updateTimezone}
+        updateTimezone={base ? updateTimezone : handleEditTimezone}
+        TCId={TCId}
         base={base}
       />
     </Card>

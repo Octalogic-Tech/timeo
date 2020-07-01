@@ -14,7 +14,7 @@ import Box from '@material-ui/core/Box';
 
 import { TimezonesContext } from '../App'
 
-const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base }) => {
+const UpdateModal = ({ open, handleOpen, handleClose, updateTimezone, base, TCId }) => {
   const [textfieldValue, setTextfieldValue] = useState('');
   const allTimezones = useContext(TimezonesContext);
 
