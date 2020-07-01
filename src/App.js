@@ -27,19 +27,24 @@ export const TimeFormatContext = React.createContext();
 const theme = createMuiTheme(themeConfig);
 
 function App() {
-  // No functionality yet
+  // Sent to date picker via context
   const [twentyFoHourFormat, setTwentyFoHourFormat] = useState(false);
 
-  // Can only update base for now 
-  const [base, setBase] = useState('Asia/Kolkata');
+  // Check if base timezone exists in local storage or use default
+  const [base, setBase] = useState(
+    JSON.parse(localStorage.getItem('baseTimezone')) || 'Asia/Kolkata'
+  );
 
-  // Cannot update properly yet
+  // Check if tracked timezones exists in local storage or use default
   // Structure - [{id: 1, timezone: 'Asia/Kolkata'}]
-  const [tracked, setTracked] = useState([]);
+  const [tracked, setTracked] = useState(
+    JSON.parse(localStorage.getItem('trackedTimezones')) || []
+  );
 
   // Array of all timezones supported by the API
   const [timezones, setTimezones] = useState([]);
 
+  // Fetch array of timezones
   useEffect(function fetchTimezones() {
     fetch("https://worldtimeapi.org/api/timezone")
       .then(res => res.json())
@@ -49,9 +54,18 @@ function App() {
       .catch(error => console.error(error));
   }, []);
 
+  // Whenever base timezone change, save to local storage
+  useEffect(function saveBaseTimezone() {
+    localStorage.setItem('baseTimezone', JSON.stringify(base));
+  }, [base]);
+
+  // Whenever tracked timezones change, save to local storage
+  useEffect(function saveTrackedTimezones() {
+    localStorage.setItem('trackedTimezones', JSON.stringify(tracked));
+  }, [tracked]);
+
   let trackedTimezones = tracked.map((item, index) => (
     <Grid item xs={12} md={6} key={index}>
-      {console.log(item)}
       <TimeCard
         timezone={item.timezone}
         TCId={item.id}
