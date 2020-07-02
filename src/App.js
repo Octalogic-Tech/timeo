@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 // Redux
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import { useSelector } from 'react-redux'
+import { getBaseTimezone } from './redux/selectors/dataSelectors'
 
 import './App.css';
 
@@ -32,10 +32,7 @@ export const timeOffsetContext = React.createContext();
 const theme = createMuiTheme(themeConfig);
 
 function App() {
-  // Check if base timezone exists in local storage or use default
-  const [base, setBase] = useState(
-    JSON.parse(localStorage.getItem('baseTimezone')) || 'Asia/Kolkata'
-  );
+  const base = useSelector(getBaseTimezone);
 
   // Check if tracked timezones exists in local storage or use default
   // Structure - [{id: 1, timezone: 'Asia/Kolkata'}]
@@ -80,40 +77,38 @@ function App() {
   ));
 
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <Box pt={10} className="container">
-          <Navbar />
+    <ThemeProvider theme={theme}>
+      <Box pt={10} className="container">
+        <Navbar />
 
-          <TimezonesContext.Provider value={timezones}>
-            <timeOffsetContext.Provider value={[offset, setOffset]}>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
-                <Container>
+        <TimezonesContext.Provider value={timezones}>
+          <timeOffsetContext.Provider value={[offset, setOffset]}>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Container>
 
-                  <TimeCard
-                    base={true}
-                    timezone={base}
-                    updateTimezone={setBase}
-                  />
+                <TimeCard
+                  base={true}
+                  timezone={base}
 
-                  <Box mt={4}>
-                    <Grid container spacing={6}>
-                      {trackedTimezones}
-                    </Grid>
-                  </Box>
+                />
 
-                  <AddTimezone
-                    setTracked={setTracked}
-                  />
+                <Box mt={4}>
+                  <Grid container spacing={6}>
+                    {trackedTimezones}
+                  </Grid>
+                </Box>
 
-                </Container>
-              </MuiPickersUtilsProvider>
-            </timeOffsetContext.Provider>
-          </TimezonesContext.Provider>
-        </Box>
+                <AddTimezone
+                  setTracked={setTracked}
+                />
 
-      </ThemeProvider>
-    </Provider>
+              </Container>
+            </MuiPickersUtilsProvider>
+          </timeOffsetContext.Provider>
+        </TimezonesContext.Provider>
+      </Box>
+
+    </ThemeProvider>
   );
 }
 

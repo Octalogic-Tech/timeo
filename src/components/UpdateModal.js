@@ -1,5 +1,14 @@
 import React, { useState, useContext } from 'react'
 
+// Redux
+import { useDispatch } from 'react-redux'
+
+// Redux Actions
+import { setBaseTimezone } from '../redux/actions/dataActions'
+
+// Redux Selectors
+// import { getBaseTimezone } from '../redux/selectors/dataSelectors'
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -17,12 +26,23 @@ import { TimezonesContext } from '../App'
 const UpdateModal = ({ open, handleOpen, handleClose,
   updateTimezone, base, deleteTimezone, add }) => {
 
+  const dispatch = useDispatch();
+
   const [textfieldValue, setTextfieldValue] = useState('');
   const allTimezones = useContext(TimezonesContext);
 
   const onTimezoneChange = (event, values) => {
     // console.log("values", values);
     setTextfieldValue(values);
+  }
+
+  const handleUpdate = () => {
+    if (base === true)
+      dispatch(setBaseTimezone(textfieldValue));
+    else
+      updateTimezone(textfieldValue)
+
+    handleClose();
   }
 
   const body = (
@@ -73,10 +93,7 @@ const UpdateModal = ({ open, handleOpen, handleClose,
             </Button>
             <Button
               color="primary"
-              onClick={() => {
-                updateTimezone(textfieldValue);
-                handleClose();
-              }}
+              onClick={handleUpdate}
             >
               {add ? "ADD" : "UPDATE"}
             </Button>

@@ -3,6 +3,13 @@ import React, { useState, useEffect, useContext } from 'react'
 // Redux
 import { useSelector } from 'react-redux'
 
+// Redux Actions
+// import { setBaseTimezone } from '../redux/actions/dataActions'
+
+// Redux Selectors
+import { getTimeFormat } from '../redux/selectors/uiSelectors'
+// import { getBaseTimezone } from '../redux/selectors/dataSelectors'
+
 // MUI
 import { DateTimePicker } from '@material-ui/pickers';
 import Card from '@material-ui/core/Card';
@@ -41,7 +48,7 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
 
   const [offset, setOffset] = useContext(timeOffsetContext);
 
-  const AM_PM = useSelector(state => state.UI.twentyFourHour);
+  const AM_PM = useSelector(getTimeFormat);
 
   // The name of the place
   let title = formatTitle(timezone);

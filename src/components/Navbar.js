@@ -1,7 +1,13 @@
 import React from 'react'
 
+// Redux
 import { useSelector, useDispatch } from 'react-redux'
+
+// Redux Actions
 import { toggleTimeFormat } from '../redux/actions/uiActions'
+
+// Redux Selectors
+import { getTimeFormat } from '../redux/selectors/uiSelectors'
 
 // MUI
 import AppBar from '@material-ui/core/AppBar';
@@ -30,7 +36,7 @@ const TealSwitch = withStyles({
 })(Switch);
 
 const Navbar = () => {
-  const AM_PM = useSelector(state => state.UI.twentyFourHour);
+  const AM_PM = useSelector(getTimeFormat);
   const dispatch = useDispatch();
 
   return (
