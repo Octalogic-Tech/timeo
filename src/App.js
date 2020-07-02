@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
+// Redux
+import { Provider } from 'react-redux';
+import store from './redux/store';
+
 import './App.css';
 
 import themeConfig from './utils/theme'
@@ -21,17 +26,12 @@ import AddTimezone from './components/AddTimezone'
 
 // To share array of timezones to the modal
 export const TimezonesContext = React.createContext();
-// To toggle the time format
-export const TimeFormatContext = React.createContext();
 
 export const timeOffsetContext = React.createContext();
 
 const theme = createMuiTheme(themeConfig);
 
 function App() {
-  // Sent to date picker via context
-  const [twentyFoHourFormat, setTwentyFoHourFormat] = useState(false);
-
   // Check if base timezone exists in local storage or use default
   const [base, setBase] = useState(
     JSON.parse(localStorage.getItem('baseTimezone')) || 'Asia/Kolkata'
@@ -80,15 +80,12 @@ function App() {
   ));
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box pt={10} className="container">
-        <Navbar
-          twentyFoHourFormat={twentyFoHourFormat}
-          setTwentyFoHourFormat={setTwentyFoHourFormat}
-        />
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <Box pt={10} className="container">
+          <Navbar />
 
-        <TimezonesContext.Provider value={timezones}>
-          <TimeFormatContext.Provider value={twentyFoHourFormat}>
+          <TimezonesContext.Provider value={timezones}>
             <timeOffsetContext.Provider value={[offset, setOffset]}>
               <MuiPickersUtilsProvider utils={MomentUtils}>
                 <Container>
@@ -112,11 +109,11 @@ function App() {
                 </Container>
               </MuiPickersUtilsProvider>
             </timeOffsetContext.Provider>
-          </TimeFormatContext.Provider>
-        </TimezonesContext.Provider>
-      </Box>
+          </TimezonesContext.Provider>
+        </Box>
 
-    </ThemeProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }
 

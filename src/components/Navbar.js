@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleTimeFormat } from '../redux/actions/uiActions'
+
 // MUI
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -26,7 +29,9 @@ const TealSwitch = withStyles({
   },
 })(Switch);
 
-const Navbar = ({ twentyFoHourFormat, setTwentyFoHourFormat }) => {
+const Navbar = () => {
+  const AM_PM = useSelector(state => state.UI.twentyFourHour);
+  const dispatch = useDispatch();
 
   return (
     <AppBar
@@ -43,8 +48,8 @@ const Navbar = ({ twentyFoHourFormat, setTwentyFoHourFormat }) => {
             12 Hour
           </Typography>
           <TealSwitch
-            checked={twentyFoHourFormat}
-            onChange={e => setTwentyFoHourFormat(e.target.checked)}
+            checked={AM_PM}
+            onClick={() => dispatch(toggleTimeFormat())}
             name="Twelve Hour Format"
 
           />

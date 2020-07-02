@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 
+// Redux
+import { useSelector } from 'react-redux'
+
 // MUI
 import { DateTimePicker } from '@material-ui/pickers';
 import Card from '@material-ui/core/Card';
@@ -14,9 +17,6 @@ import momentTZ from 'moment-timezone'
 import accurateInterval from 'accurate-interval'
 
 import UpdateModal from './UpdateModal';
-
-// Context for AM/PM toggle
-import { TimeFormatContext } from '../App'
 
 // Context for time offset
 import { timeOffsetContext } from '../App'
@@ -39,8 +39,9 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
   const [utcOffset, setUtcOffset] = useState('');
   const [time, setTime] = useState(momentTZ.tz(timezone));
 
-  const AM_PM = useContext(TimeFormatContext);
   const [offset, setOffset] = useContext(timeOffsetContext);
+
+  const AM_PM = useSelector(state => state.UI.twentyFourHour);
 
   // The name of the place
   let title = formatTitle(timezone);

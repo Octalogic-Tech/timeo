@@ -1,0 +1,1 @@
+export const TOGGLE_TIME_FORMAT = 'TOGGLE_TIME_FORMAT';
