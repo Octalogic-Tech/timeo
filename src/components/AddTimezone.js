@@ -1,14 +1,22 @@
 import React, { useState, Fragment } from 'react'
 
+// Redux
+import { useSelector } from 'react-redux'
+
+// Selectors
+import { getLastTrackedId } from '../redux/selectors/dataSelectors'
+
 // MUI
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
 import UpdateModal from './UpdateModal';
 
-const AddTimezone = ({ setTracked }) => {
+const AddTimezone = () => {
     // For modal toggle
     const [open, setOpen] = useState(false);
+
+    const latestId = useSelector(getLastTrackedId);
 
     const handleOpen = () => {
         setOpen(true);
@@ -17,18 +25,6 @@ const AddTimezone = ({ setTracked }) => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    const handleAddTimezone = value => {
-        setTracked(prevState => {
-            let id = 0;
-            // Get new id for new tracked time zone.
-            if (prevState.length > 0) {
-                id = prevState[prevState.length - 1].id + 1;
-            }
-
-            return [...prevState, { id: id, timezone: value }];
-        });
-    }
 
     const styles = {
         margin: 0,
@@ -53,8 +49,7 @@ const AddTimezone = ({ setTracked }) => {
                 open={open}
                 handleOpen={handleOpen}
                 handleClose={handleClose}
-                updateTimezone={handleAddTimezone}
-                base={true}
+                TCId={latestId + 1}
                 add={true}
             />
         </Fragment>

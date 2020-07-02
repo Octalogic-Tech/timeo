@@ -38,7 +38,7 @@ const formatTitle = tz => {
   return title;
 }
 
-const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
+const TimeCard = ({ timezone, base, TCId }) => {
   // For modal toggle
   const [open, setOpen] = useState(false);
 
@@ -78,37 +78,6 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
     // Didnt update value here as it would 
     // effectively update time twice
   }
-
-  const handleEditTimezone = value => {
-    updateTimezone(prevState => {
-      let updatedTimezones = [];
-
-      // Update the timezone where id matches
-      prevState.forEach(item => {
-        if (item.id === TCId)
-          updatedTimezones.push({ id: item.id, timezone: value });
-        else
-          updatedTimezones.push(item);
-      });
-
-      return updatedTimezones;
-    });
-  }
-
-  const handleDeleteTimezone = () => {
-    updateTimezone(prevState => {
-      let updatedTimezones = [];
-
-      // Skip the timezone where id matches
-      prevState.forEach(item => {
-        if (item.id === TCId) { }
-        else
-          updatedTimezones.push(item);
-      });
-
-      return updatedTimezones;
-    });
-  };
 
   useEffect(function updateTimeWithOffset() {
     let newTime = time.add(offset, 'ms');
@@ -214,8 +183,7 @@ const TimeCard = ({ timezone, updateTimezone, base, TCId }) => {
         open={open}
         handleOpen={handleOpen}
         handleClose={handleClose}
-        updateTimezone={base ? updateTimezone : handleEditTimezone}
-        deleteTimezone={handleDeleteTimezone}
+        TCId={TCId}
         base={base}
       />
     </Card>

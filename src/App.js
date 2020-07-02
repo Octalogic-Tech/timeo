@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Redux
 import { useSelector } from 'react-redux'
-import { getBaseTimezone } from './redux/selectors/dataSelectors'
+import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
 
 import './App.css';
 
@@ -33,12 +33,7 @@ const theme = createMuiTheme(themeConfig);
 
 function App() {
   const base = useSelector(getBaseTimezone);
-
-  // Check if tracked timezones exists in local storage or use default
-  // Structure - [{id: 1, timezone: 'Asia/Kolkata'}]
-  const [tracked, setTracked] = useState(
-    JSON.parse(localStorage.getItem('trackedTimezones')) || []
-  );
+  const tracked = useSelector(getTrackedTimezones);
 
   // Array of all timezones supported by the API
   const [timezones, setTimezones] = useState([]);
@@ -71,7 +66,6 @@ function App() {
       <TimeCard
         timezone={item.timezone}
         TCId={item.id}
-        updateTimezone={setTracked}
       />
     </Grid>
   ));
@@ -89,7 +83,6 @@ function App() {
                 <TimeCard
                   base={true}
                   timezone={base}
-
                 />
 
                 <Box mt={4}>
@@ -98,9 +91,7 @@ function App() {
                   </Grid>
                 </Box>
 
-                <AddTimezone
-                  setTracked={setTracked}
-                />
+                <AddTimezone />
 
               </Container>
             </MuiPickersUtilsProvider>

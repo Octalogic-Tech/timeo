@@ -4,7 +4,7 @@ import React, { useState, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 
 // Redux Actions
-import { setBaseTimezone } from '../redux/actions/dataActions'
+import { setBaseTimezone, removeTrackedTimezone, updateTrackedTimezone, addTrackedTimezone } from '../redux/actions/dataActions'
 
 // Redux Selectors
 // import { getBaseTimezone } from '../redux/selectors/dataSelectors'
@@ -24,7 +24,7 @@ import Box from '@material-ui/core/Box';
 import { TimezonesContext } from '../App'
 
 const UpdateModal = ({ open, handleOpen, handleClose,
-  updateTimezone, base, deleteTimezone, add }) => {
+  base, add, TCId }) => {
 
   const dispatch = useDispatch();
 
@@ -32,16 +32,22 @@ const UpdateModal = ({ open, handleOpen, handleClose,
   const allTimezones = useContext(TimezonesContext);
 
   const onTimezoneChange = (event, values) => {
-    // console.log("values", values);
     setTextfieldValue(values);
   }
 
   const handleUpdate = () => {
     if (base === true)
       dispatch(setBaseTimezone(textfieldValue));
+    else if (add === true)
+      dispatch(addTrackedTimezone(TCId, textfieldValue));
     else
-      updateTimezone(textfieldValue)
+      dispatch(updateTrackedTimezone(TCId, textfieldValue));
 
+    handleClose();
+  }
+
+  const handleDelete = () => {
+    dispatch(removeTrackedTimezone(TCId));
     handleClose();
   }
 
@@ -76,11 +82,8 @@ const UpdateModal = ({ open, handleOpen, handleClose,
         />
         <Box display="flex" flexWrap="wrap" justifyContent="space-between" pt={2}>
           <Button color="secondary"
-            disabled={base}
-            onClick={() => {
-              deleteTimezone();
-              handleClose();
-            }}
+            disabled={base || add}
+            onClick={handleDelete}
           >
             DELETE
           </Button>
