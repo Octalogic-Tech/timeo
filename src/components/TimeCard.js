@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // Redux
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 // Redux Actions
 // import { setBaseTimezone } from '../redux/actions/dataActions'
 
 // Redux Selectors
 import { getTimeFormat } from '../redux/selectors/uiSelectors'
-// import { getBaseTimezone } from '../redux/selectors/dataSelectors'
+import { getOffset } from '../redux/selectors/dataSelectors'
 
 // MUI
 import { DateTimePicker } from '@material-ui/pickers';
@@ -24,9 +24,8 @@ import momentTZ from 'moment-timezone'
 import accurateInterval from 'accurate-interval'
 
 import UpdateModal from './UpdateModal';
+import { setOffset } from '../redux/actions/dataActions';
 
-// Context for time offset
-import { timeOffsetContext } from '../App'
 
 const formatTitle = tz => {
   // Splits timezone string
@@ -43,12 +42,13 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const [open, setOpen] = useState(false);
 
   const [abbreviation, setAbbreviation] = useState('');
-  const [utcOffset, setUtcOffset] = useState('');
+  const [utcOffset, setUtcOffset] = useState(''); //For UI
   const [time, setTime] = useState(momentTZ.tz(timezone));
 
-  const [offset, setOffset] = useContext(timeOffsetContext);
-
+  const offset = useSelector(getOffset);
+  console.log("Offset ", offset);
   const AM_PM = useSelector(getTimeFormat);
+  const dispatch = useDispatch();
 
   // The name of the place
   let title = formatTitle(timezone);
@@ -74,7 +74,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
 
   const updateTime = value => {
     let diff = value.diff(time);
-    setOffset(diff);
+    dispatch(setOffset(diff));
     // Didnt update value here as it would 
     // effectively update time twice
   }
@@ -83,8 +83,8 @@ const TimeCard = ({ timezone, base, TCId }) => {
     let newTime = time.add(offset, 'ms');
     setTime(newTime);
     // Incase of re-renders
-    setOffset(0);
-  }, [offset, time, setOffset]);
+    dispatch(setOffset(0));
+  }, [offset, time, dispatch]);
 
   useEffect(function updateTimeEveryMinute() {
     const interval = accurateInterval(() => {

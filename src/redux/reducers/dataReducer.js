@@ -47,6 +47,12 @@ const dataReducer = (state = initialState, action) => {
                 )
             }
 
+        case actions.SET_OFFSET:
+            return {
+                ...state,
+                offset: action.payload.offset
+            }
+
         default: return state;
     }
 };

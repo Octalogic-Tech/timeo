@@ -14,3 +14,7 @@ export const getLastTrackedId = state => {
             : 0
     )
 };
+
+export const getOffset = state => (
+    state.data.offset
+);
