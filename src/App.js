@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 // Redux
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
+import { fetchTimezones } from './redux/actions/dataActions'
 
 import './App.css';
 
@@ -24,9 +25,6 @@ import Navbar from './components/Navbar'
 import TimeCard from './components/TimeCard'
 import AddTimezone from './components/AddTimezone'
 
-// To share array of timezones to the modal
-export const TimezonesContext = React.createContext();
-
 const theme = createMuiTheme(themeConfig);
 
 function App() {
@@ -34,17 +32,12 @@ function App() {
   const tracked = useSelector(getTrackedTimezones);
 
   // Array of all timezones supported by the API
-  const [timezones, setTimezones] = useState([]);
+  const dispatch = useDispatch();
 
   // Fetch array of timezones
-  useEffect(function fetchTimezones() {
-    fetch("https://worldtimeapi.org/api/timezone")
-      .then(res => res.json())
-      .then(data => {
-        setTimezones(data);
-      })
-      .catch(error => console.error(error));
-  }, []);
+  useEffect(function fetchAllTimezones() {
+    dispatch(fetchTimezones());
+  }, [dispatch]);
 
   // Whenever base timezone change, save to local storage
   useEffect(function saveBaseTimezone() {
@@ -70,26 +63,24 @@ function App() {
       <Box pt={10} className="container">
         <Navbar />
 
-        <TimezonesContext.Provider value={timezones}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Container>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <Container>
 
-              <TimeCard
-                base={true}
-                timezone={base}
-              />
+            <TimeCard
+              base={true}
+              timezone={base}
+            />
 
-              <Box mt={4}>
-                <Grid container spacing={6}>
-                  {trackedTimezones}
-                </Grid>
-              </Box>
+            <Box mt={4}>
+              <Grid container spacing={6}>
+                {trackedTimezones}
+              </Grid>
+            </Box>
 
-              <AddTimezone />
+            <AddTimezone />
 
-            </Container>
-          </MuiPickersUtilsProvider>
-        </TimezonesContext.Provider>
+          </Container>
+        </MuiPickersUtilsProvider>
       </Box>
 
     </ThemeProvider>

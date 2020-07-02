@@ -1,18 +1,16 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 
 // Redux
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // Redux Actions
 import { setBaseTimezone, removeTrackedTimezone, updateTrackedTimezone, addTrackedTimezone } from '../redux/actions/dataActions'
 
 // Redux Selectors
-// import { getBaseTimezone } from '../redux/selectors/dataSelectors'
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-// import Grid from '@material-ui/core/Grid';
 
 // For Modal
 import Modal from '@material-ui/core/Modal';
@@ -20,8 +18,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-
-import { TimezonesContext } from '../App'
+import { getTimezones } from '../redux/selectors/dataSelectors';
 
 const UpdateModal = ({ open, handleOpen, handleClose,
   base, add, TCId }) => {
@@ -29,7 +26,7 @@ const UpdateModal = ({ open, handleOpen, handleClose,
   const dispatch = useDispatch();
 
   const [textfieldValue, setTextfieldValue] = useState('');
-  const allTimezones = useContext(TimezonesContext);
+  const allTimezones = useSelector(getTimezones);
 
   const onTimezoneChange = (event, values) => {
     setTextfieldValue(values);

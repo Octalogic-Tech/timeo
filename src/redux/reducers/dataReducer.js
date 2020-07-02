@@ -51,6 +51,12 @@ const dataReducer = (state = initialState, action) => {
             return {
                 ...state,
                 offset: action.payload.offset
+            };
+
+        case actions.SET_TIMEZONES:
+            return {
+                ...state,
+                timezones: action.payload.timezones
             }
 
         default: return state;

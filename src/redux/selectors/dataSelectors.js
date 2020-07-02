@@ -18,3 +18,7 @@ export const getLastTrackedId = state => {
 export const getOffset = state => (
     state.data.offset
 );
+
+export const getTimezones = state => (
+    state.data.timezones
+)

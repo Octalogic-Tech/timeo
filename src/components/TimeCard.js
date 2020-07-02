@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 // Redux Actions
-// import { setBaseTimezone } from '../redux/actions/dataActions'
+import { setOffset } from '../redux/actions/dataActions';
 
 // Redux Selectors
 import { getTimeFormat } from '../redux/selectors/uiSelectors'
@@ -24,8 +24,6 @@ import momentTZ from 'moment-timezone'
 import accurateInterval from 'accurate-interval'
 
 import UpdateModal from './UpdateModal';
-import { setOffset } from '../redux/actions/dataActions';
-
 
 const formatTitle = tz => {
   // Splits timezone string
@@ -46,7 +44,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const [time, setTime] = useState(momentTZ.tz(timezone));
 
   const offset = useSelector(getOffset);
-  console.log("Offset ", offset);
   const AM_PM = useSelector(getTimeFormat);
   const dispatch = useDispatch();
 

@@ -39,3 +39,15 @@ export const setOffset = offset => ({
         offset
     }
 });
+
+// For timezones
+export const fetchTimezones = () => ({
+    type: actions.FETCH_TIMEZONES
+})
+
+export const setTimezones = timezones => ({
+    type: actions.SET_TIMEZONES,
+    payload: {
+        timezones
+    }
+})

@@ -5,6 +5,7 @@ export const TOGGLE_TIME_FORMAT = 'TOGGLE_TIME_FORMAT';
 
 // For timezones
 export const FETCH_TIMEZONES = 'FETCH_TIMEZONES'; //API CALL
+export const SET_TIMEZONES = 'SET_TIMEZONES';
 
 // For baseTimezone
 export const GET_BASE_TIMEZONE = 'GET_BASE_TIMEZONE'; //Selector
