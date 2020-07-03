@@ -39,9 +39,9 @@ const TimeCard = ({ timezone, base, TCId }) => {
   // For modal toggle
   const [open, setOpen] = useState(false);
 
-  const [abbreviation, setAbbreviation] = useState('');
-  const [utcOffset, setUtcOffset] = useState(''); //For UI
-  const [time, setTime] = useState(momentTZ.tz(timezone));
+  const [abbreviation, setAbbreviation] = useState(momentTZ.tz(timezone).zoneAbbr()); //For UI
+  const [utcOffset, setUtcOffset] = useState(momentTZ.tz(timezone).format("Z")); //For UI
+  const [time, setTime] = useState(momentTZ.tz(timezone)); //For Time calculation
 
   const offset = useSelector(getOffset);
   const AM_PM = useSelector(getTimeFormat);
@@ -55,8 +55,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
   let borderStyle = { borderRight: '1px solid #000', }
 
   // Check if night time
-
-  // console.log("time: ", timeString);
   if (time.get('hour') >= 18 || time.get('hour') <= 5) {
     night = true;
     cardStyles.backgroundColor = "#343434";
@@ -92,18 +90,12 @@ const TimeCard = ({ timezone, base, TCId }) => {
     return () => interval.clear();
   }, [time]);
 
-  useEffect(function getTimezoneDetails() {
-    fetch(`https://worldtimeapi.org/api/timezone/${timezone}`)
-      .then(res => res.json())
-      .then(data => {
-        setAbbreviation(data.abbreviation)
-        setUtcOffset(data.utc_offset);
-      })
-      .catch(err => console.error(err));
-
-    // Update time once timezone changes
+  // Update time card once timezone changes
+  useEffect(function updateTimeCard() {
     setTime(momentTZ.tz(timezone));
-  }, [timezone])
+    setAbbreviation(momentTZ.tz(timezone).zoneAbbr());
+    setUtcOffset(momentTZ.tz(timezone).format("Z"));
+  }, [timezone]);
 
   const handleOpen = () => {
     setOpen(true);
