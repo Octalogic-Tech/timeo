@@ -30,24 +30,12 @@ const theme = createMuiTheme(themeConfig);
 function App() {
   const base = useSelector(getBaseTimezone);
   const tracked = useSelector(getTrackedTimezones);
-
-  // Array of all timezones supported by the API
   const dispatch = useDispatch();
 
   // Fetch array of timezones
   useEffect(function fetchAllTimezones() {
     dispatch(fetchTimezones());
   }, [dispatch]);
-
-  // Whenever base timezone change, save to local storage
-  useEffect(function saveBaseTimezone() {
-    localStorage.setItem('baseTimezone', JSON.stringify(base));
-  }, [base]);
-
-  // Whenever tracked timezones change, save to local storage
-  useEffect(function saveTrackedTimezones() {
-    localStorage.setItem('trackedTimezones', JSON.stringify(tracked));
-  }, [tracked]);
 
   let trackedTimezones = tracked.map((item, index) => (
     <Grid item xs={12} md={6} key={index}>
