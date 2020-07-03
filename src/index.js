@@ -12,6 +12,7 @@ import store, { persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react'
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+// Removed exact from route on purpose
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,7 +20,7 @@ ReactDOM.render(
       <PersistGate loading={null} persistor={persistor}>
         <Router>
           <Switch>
-            <Route exact path="/">
+            <Route path="/">
               <App />
             </Route>
           </Switch>
