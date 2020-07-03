@@ -9,7 +9,7 @@ export const getTrackedTimezones = state => (
 export const getLastTrackedId = state => {
     let trackedTimezones = state.data.trackedTimezones;
     return (
-        trackedTimezones.length > 0 ?
+        (trackedTimezones && trackedTimezones.length > 0) ?
             trackedTimezones[trackedTimezones.length - 1].id
             : 0
     )

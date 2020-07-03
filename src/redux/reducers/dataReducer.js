@@ -2,8 +2,8 @@ import * as actions from '../actionTypes'
 
 const initialState = {
     timezones: [],
-    baseTimezone: JSON.parse(localStorage.getItem('baseTimezone')) || 'Asia/Kolkata',
-    trackedTimezones: JSON.parse(localStorage.getItem('trackedTimezones')) || [],
+    baseTimezone: 'Asia/Kolkata',
+    trackedTimezones: [],
     offset: 0
 };
 
@@ -45,6 +45,12 @@ const dataReducer = (state = initialState, action) => {
                             timezone: action.payload.timezone
                         }
                 )
+            }
+
+        case actions.SET_TRACKED_TIMEZONES:
+            return {
+                ...state,
+                trackedTimezones: action.payload.timezones
             }
 
         case actions.SET_OFFSET:

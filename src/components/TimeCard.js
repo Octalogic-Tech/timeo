@@ -26,13 +26,17 @@ import accurateInterval from 'accurate-interval'
 import UpdateModal from './UpdateModal';
 
 const formatTitle = tz => {
-  // Splits timezone string
-  let title = tz.split('/');
-  // Get last word - the location
-  title = title[title.length - 1];
-  // If location is more than 1 word, format
-  title = title.split('_').join(' ');
-  return title;
+  if (tz) {
+    // Splits timezone string
+    let title = tz.split('/');
+    // Get last word - the location
+    title = title[title.length - 1];
+    // If location is more than 1 word, format
+    title = title.split('_').join(' ');
+    return title;
+  }
+
+  return "";
 }
 
 const TimeCard = ({ timezone, base, TCId }) => {

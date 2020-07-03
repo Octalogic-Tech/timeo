@@ -32,6 +32,13 @@ export const updateTrackedTimezone = (id, timezone) => ({
     }
 });
 
+export const setTrackedTimezones = (timezones) => ({
+    type: actions.SET_TRACKED_TIMEZONES,
+    payload: {
+        timezones
+    }
+})
+
 // For Offset
 export const setOffset = offset => ({
     type: actions.SET_OFFSET,

@@ -11,11 +11,19 @@ import store, { persistor } from './redux/store';
 // Redux persist
 import { PersistGate } from 'redux-persist/integration/react'
 
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <App />
+            </Route>
+          </Switch>
+        </Router>
       </PersistGate>
     </Provider>
   </React.StrictMode>,

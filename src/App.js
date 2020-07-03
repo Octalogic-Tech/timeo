@@ -2,12 +2,18 @@ import React, { useEffect } from 'react';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux'
+
+// Redux Selectors
 import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
-import { fetchTimezones } from './redux/actions/dataActions'
+
+// Redux Actions
+import { fetchTimezones, setBaseTimezone, setTrackedTimezones } from './redux/actions/dataActions'
 
 import './App.css';
 
 import themeConfig from './utils/theme'
+
+import { useLocation } from 'react-router-dom'
 
 // MUI
 import { createMuiTheme } from "@material-ui/core/styles";
@@ -27,10 +33,45 @@ import AddTimezone from './components/AddTimezone'
 
 const theme = createMuiTheme(themeConfig);
 
-function App() {
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
+function App(props) {
   const base = useSelector(getBaseTimezone);
   const tracked = useSelector(getTrackedTimezones);
   const dispatch = useDispatch();
+
+  const baseParams = useQuery().get("base");
+  const trackedParams = useQuery().get("tracked");
+  const offsetParams = useQuery().get("offset");
+
+  useEffect(function updateBaseViaParam() {
+    if (baseParams) {
+      console.log("BASE PARAM DETECTED: ", baseParams);
+      dispatch(setBaseTimezone(baseParams));
+    }
+  }, [baseParams, dispatch]);
+
+  useEffect(function updateTrackedViaParams() {
+    if (trackedParams) {
+      console.log("TRACKED PARAM DETECTED: ", trackedParams);
+      const trackedParamsAray = trackedParams.split(",");
+      const trackedParamsToBeRendered = trackedParamsAray.map(
+        (timezone, index) => ({ timezone, id: index + 1 })
+      )
+      // console.log("NEW ARRAY: ", trackedParamsToBeRendered);
+      dispatch(setTrackedTimezones(trackedParamsToBeRendered));
+    }
+  }, [trackedParams, dispatch]);
+
+  useEffect(function updateOffsetViaParam() {
+    if (offsetParams) {
+      console.log("OFFSET PARAM DETECTED: ", offsetParams);
+    }
+  }, [offsetParams, dispatch]);
 
   // Fetch array of timezones
   useEffect(function fetchAllTimezones() {
