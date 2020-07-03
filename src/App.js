@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
 
 // Redux Actions
-import { fetchTimezones, setBaseTimezone, setTrackedTimezones } from './redux/actions/dataActions'
+import { fetchTimezones, setBaseTimezone, setTrackedTimezones, setOffset } from './redux/actions/dataActions'
 
 import './App.css';
 
@@ -62,14 +62,17 @@ function App(props) {
       const trackedParamsToBeRendered = trackedParamsAray.map(
         (timezone, index) => ({ timezone, id: index + 1 })
       )
-      // console.log("NEW ARRAY: ", trackedParamsToBeRendered);
       dispatch(setTrackedTimezones(trackedParamsToBeRendered));
     }
   }, [trackedParams, dispatch]);
 
   useEffect(function updateOffsetViaParam() {
+    console.log("OFFSET PARAM DETECTED: ", offsetParams);
     if (offsetParams) {
-      console.log("OFFSET PARAM DETECTED: ", offsetParams);
+      // Check if it's a number
+      if (!isNaN(offsetParams)) {
+        dispatch(setOffset(offsetParams));
+      }
     }
   }, [offsetParams, dispatch]);
 
