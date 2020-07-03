@@ -21,3 +21,5 @@ export const SET_TRACKED_TIMEZONES = 'SET_TRACKED_TIMEZONES'; // For SHARE
 // For Offset
 export const GET_OFFSET = 'GET_OFFSET'; //Selector
 export const SET_OFFSET = 'SET_OFFSET';
+export const GET_SHARE_OFFSET = 'GET_SHARE_OFFSET';
+export const SET_SHARE_OFFSET = 'SET_SHARE_OFFSET';

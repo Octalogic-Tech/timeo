@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 // Redux Actions
-import { setOffset } from '../redux/actions/dataActions';
+import { setOffset, setShareOffset } from '../redux/actions/dataActions';
 
 // Redux Selectors
 import { getTimeFormat } from '../redux/selectors/uiSelectors'
-import { getOffset } from '../redux/selectors/dataSelectors'
+import { getOffset, getShareOffset } from '../redux/selectors/dataSelectors'
 
 // MUI
 import { DateTimePicker } from '@material-ui/pickers';
@@ -49,6 +49,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
 
   const offset = useSelector(getOffset);
   const AM_PM = useSelector(getTimeFormat);
+  const shareOffset = useSelector(getShareOffset);
   const dispatch = useDispatch();
 
   // The name of the place
@@ -74,6 +75,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const updateTime = value => {
     let diff = value.diff(time);
     dispatch(setOffset(diff));
+    dispatch(setShareOffset(shareOffset + diff));
     // Didnt update value here as it would 
     // effectively update time twice
   }
@@ -126,13 +128,13 @@ const TimeCard = ({ timezone, base, TCId }) => {
               <Typography
                 variant={base ? "h4" : "h5"}
               >
-                {title || "Loading"}
+                {title || "UTC"}
               </Typography>
               <Typography
                 variant="body1"
                 component="p"
               >
-                {abbreviation || "Loading"}
+                {abbreviation || "UTC"}
               </Typography>
               <Typography
                 color={night ? "inherit" : "textSecondary"}

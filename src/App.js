@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
 
 // Redux Actions
-import { fetchTimezones, setBaseTimezone, setTrackedTimezones, setOffset } from './redux/actions/dataActions'
+import { fetchTimezones, setBaseTimezone, setTrackedTimezones, setOffset, setShareOffset } from './redux/actions/dataActions'
 
 import './App.css';
 
@@ -67,11 +67,12 @@ function App(props) {
   }, [trackedParams, dispatch]);
 
   useEffect(function updateOffsetViaParam() {
-    console.log("OFFSET PARAM DETECTED: ", offsetParams);
     if (offsetParams) {
+      console.log("OFFSET PARAM DETECTED: ", offsetParams);
       // Check if it's a number
       if (!isNaN(offsetParams)) {
         dispatch(setOffset(offsetParams));
+        dispatch(setShareOffset(Number(offsetParams)));
       }
     }
   }, [offsetParams, dispatch]);

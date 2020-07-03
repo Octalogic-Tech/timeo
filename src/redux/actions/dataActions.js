@@ -47,6 +47,13 @@ export const setOffset = offset => ({
     }
 });
 
+export const setShareOffset = offset => ({
+    type: actions.SET_SHARE_OFFSET,
+    payload: {
+        offset
+    }
+});
+
 // For timezones
 export const fetchTimezones = () => ({
     type: actions.FETCH_TIMEZONES

@@ -8,7 +8,7 @@ import { toggleTimeFormat } from '../redux/actions/uiActions'
 
 // Redux Selectors
 import { getTimeFormat } from '../redux/selectors/uiSelectors'
-import { getBaseTimezone, getTrackedTimezones, getOffset } from '../redux/selectors/dataSelectors'
+import { getBaseTimezone, getTrackedTimezones, getShareOffset } from '../redux/selectors/dataSelectors'
 
 // MUI
 import AppBar from '@material-ui/core/AppBar';
@@ -46,7 +46,6 @@ const createShareUrl = (base, tracked, offset) => {
   let trackedWithoutIds = tracked.map(item => (item.timezone));
 
   let trackedParams = trackedWithoutIds.join(',');
-  console.log('tracked', trackedParams);
 
   return `${baseUrl}?base=${base}&tracked=${trackedParams.toString()}&offset=${offset}`;
 }
@@ -57,7 +56,7 @@ const Navbar = () => {
   const AM_PM = useSelector(getTimeFormat);
   const base = useSelector(getBaseTimezone);
   const tracked = useSelector(getTrackedTimezones);
-  const offset = useSelector(getOffset);
+  const offset = useSelector(getShareOffset);
 
   const dispatch = useDispatch();
 
@@ -67,7 +66,7 @@ const Navbar = () => {
     if (navigator.share) {
       navigator.share({
         title: "Timeo share!",
-        text: "Check out what I'm tracking on Timeo!",
+        text: "Check out what I'm tracking on Timeo! \n",
         url: shareUrl
       }).then(() => {
         console.log('Thanks for sharing!');

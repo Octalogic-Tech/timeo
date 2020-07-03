@@ -19,6 +19,10 @@ export const getOffset = state => (
     state.data.offset
 );
 
+export const getShareOffset = state => (
+    state.data.shareOffset
+)
+
 export const getTimezones = state => (
     state.data.timezones
 )
