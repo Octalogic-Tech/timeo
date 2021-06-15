@@ -28,7 +28,7 @@ import { getTimezones } from "../redux/selectors/dataSelectors";
 const UpdateModal = ({ open, handleOpen, handleClose, base, add, TCId }) => {
   const dispatch = useDispatch();
 
-  const [textfieldValue, setTextfieldValue] = useState("");
+  const [textFieldValue, setTextfieldValue] = useState("");
   const allTimezones = useSelector(getTimezones);
 
   const onTimezoneChange = (event, values) => {
