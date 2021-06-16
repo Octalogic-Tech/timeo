@@ -46,9 +46,10 @@ const formatTitle = (tz) => {
 };
 
 const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
-  console.log(timezone);
 
+const TimeCard = ({ timezone, base, TCId }) => {
   // Style Hook
+
   const useStyles = makeStyles((theme) => ({
     removeCard: {
       cursor: "pointer",
@@ -57,6 +58,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
       },
     },
   }));
+
   const classes = useStyles();
   // For modal toggle
   const [open, setOpen] = useState(false);
@@ -71,7 +73,6 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   const AM_PM = useSelector(getTimeFormat);
   const shareOffset = useSelector(getShareOffset);
   const dispatch = useDispatch();
-
   // The name of the place
   let title = formatTitle(timezone);
 
@@ -122,6 +123,30 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
       }
     },
     [reset, time]
+    // Didnt update value here as it would
+    // effectively update time twice
+  };
+
+  useEffect(
+    function updateTimeWithOffset() {
+      let newTime = time.add(offset, "ms");
+      setTime(newTime);
+      // Incase of re-renders
+      dispatch(setOffset(0));
+    },
+    [offset, time, dispatch]
+  );
+
+  useEffect(
+    function updateTimeEveryMinute() {
+      const interval = accurateInterval(() => {
+        let updatedTime = moment(time.add(1, "m"));
+        setTime(updatedTime);
+      }, 60000);
+
+      return () => interval.clear();
+    },
+    [time]
   );
 
   // Update time card once timezone changes
@@ -133,6 +158,8 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     },
     [timezone]
   );
+
+  // Handlers
 
   const handleOpen = () => {
     setOpen(true);
@@ -147,6 +174,10 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     dispatch(removeTrackedTimezone(id));
   };
 
+  const removeCardHandler = (id) => {
+    console.log(id);
+    dispatch(removeTrackedTimezone(id));
+  };
   return (
     <Card style={cardStyles}>
       <CardContent>
