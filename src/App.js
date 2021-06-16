@@ -39,7 +39,9 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Navbar from "./components/Navbar";
 import TimeCard from "./components/TimeCard";
 import AddTimezone from "./components/AddTimezone";
+
 import { useState } from "react";
+import SearchTimezone from "./components/SearchTimezone";
 
 const theme = createMuiTheme(themeConfig);
 
@@ -112,6 +114,7 @@ function App(props) {
         TCId={item.id}
         reset={resetTimezone}
         setReset={setTimezone}
+        country={item.timezone.split("/")}
       />
     </Grid>
   ));
@@ -120,7 +123,7 @@ function App(props) {
     <ThemeProvider theme={theme}>
       <Box pt={10} className="container">
         <Navbar reset={resetTimezone} setReset={setTimezone} timezone={base} />
-
+        <SearchTimezone />
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Container>
             <TimeCard

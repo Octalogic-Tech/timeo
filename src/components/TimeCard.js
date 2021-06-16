@@ -31,6 +31,8 @@ import { makeStyles } from "@material-ui/core";
 // Components
 import UpdateModal from "./UpdateModal";
 
+// Packages
+
 const formatTitle = (tz) => {
   if (tz) {
     // Splits timezone string
@@ -45,11 +47,13 @@ const formatTitle = (tz) => {
   return "";
 };
 
-const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
-  console.log(timezone);
-
+const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
   // Style Hook
   const useStyles = makeStyles((theme) => ({
+    cardStyle: {
+      boxShadow: "3px 3px 35px rgba(0, 0, 0, 0.5)",
+      borderRadius: "20px",
+    },
     removeCard: {
       cursor: "pointer",
       "&:hover": {
@@ -57,6 +61,9 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
       },
     },
   }));
+
+  // console.log(countryToISO("america"));
+
   const classes = useStyles();
   // For modal toggle
   const [open, setOpen] = useState(false);
@@ -74,7 +81,6 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
 
   // The name of the place
   let title = formatTitle(timezone);
-
   let night = false;
   let cardStyles = {};
   let borderStyle = { borderRight: "1px solid #000" };
@@ -96,7 +102,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     let diff = value.diff(time);
     dispatch(setOffset(diff));
     dispatch(setShareOffset(shareOffset + diff));
-    setReset(!reset);
+    setReset(true);
     // Didnt update value here as it would
     // effectively update time twice
   };
@@ -113,7 +119,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
 
   useEffect(
     function updateTimeEveryMinute() {
-      if (reset) {
+      if (!reset) {
         const interval = accurateInterval(() => {
           let updatedTime = moment(time.add(1, "m"));
           setTime(updatedTime);
@@ -148,7 +154,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   };
 
   return (
-    <Card style={cardStyles}>
+    <Card style={cardStyles} className={classes.cardStyle}>
       <CardContent>
         <Grid container align="center">
           <Grid item xs={12} sm={6} onClick={handleOpen} style={borderStyle}>
@@ -162,6 +168,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
               <Typography variant={base ? "h4" : "h5"}>
                 {title || "UTC"}
               </Typography>
+
               <Typography variant="body1" component="p">
                 {abbreviation || "UTC"}
               </Typography>
