@@ -1,35 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 // Redux
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 
 // Redux Selectors
-import { getBaseTimezone, getTrackedTimezones } from './redux/selectors/dataSelectors'
+import {
+  getBaseTimezone,
+  getTrackedTimezones,
+} from "./redux/selectors/dataSelectors";
 
 // Redux Actions
-import { fetchTimezones, setBaseTimezone, setTrackedTimezones, setOffset, setShareOffset } from './redux/actions/dataActions'
+import {
+  fetchTimezones,
+  setBaseTimezone,
+  setTrackedTimezones,
+  setOffset,
+  setShareOffset,
+} from "./redux/actions/dataActions";
 
-import './App.css';
+import "./App.css";
 
-import themeConfig from './utils/theme'
+import themeConfig from "./utils/theme";
 
-import { useLocation } from 'react-router-dom'
+import { useLocation } from "react-router-dom";
 
 // MUI
 import { createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import { ThemeProvider } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 // import Typography from '@material-ui/core/Typography';
 
 // For Date Picker
-import MomentUtils from '@date-io/moment';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from "@date-io/moment";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
-import Navbar from './components/Navbar'
-import TimeCard from './components/TimeCard'
-import AddTimezone from './components/AddTimezone'
+import Navbar from "./components/Navbar";
+import TimeCard from "./components/TimeCard";
+import AddTimezone from "./components/AddTimezone";
+import { useState } from "react";
 
 const theme = createMuiTheme(themeConfig);
 
@@ -40,6 +50,7 @@ function useQuery() {
 }
 
 function App(props) {
+  const [resetTimezone, setTimezone] = useState(false);
   const base = useSelector(getBaseTimezone);
   const tracked = useSelector(getTrackedTimezones);
   const dispatch = useDispatch();
@@ -48,45 +59,59 @@ function App(props) {
   const trackedParams = useQuery().get("tracked");
   const offsetParams = useQuery().get("offset");
 
-  useEffect(function updateBaseViaParam() {
-    if (baseParams) {
-      console.log("BASE PARAM DETECTED: ", baseParams);
-      dispatch(setBaseTimezone(baseParams));
-    }
-  }, [baseParams, dispatch]);
-
-  useEffect(function updateTrackedViaParams() {
-    if (trackedParams) {
-      console.log("TRACKED PARAM DETECTED: ", trackedParams);
-      const trackedParamsAray = trackedParams.split(",");
-      const trackedParamsToBeRendered = trackedParamsAray.map(
-        (timezone, index) => ({ timezone, id: index + 1 })
-      )
-      dispatch(setTrackedTimezones(trackedParamsToBeRendered));
-    }
-  }, [trackedParams, dispatch]);
-
-  useEffect(function updateOffsetViaParam() {
-    if (offsetParams) {
-      console.log("OFFSET PARAM DETECTED: ", offsetParams);
-      // Check if it's a number
-      if (!isNaN(offsetParams)) {
-        dispatch(setOffset(offsetParams));
-        dispatch(setShareOffset(Number(offsetParams)));
+  useEffect(
+    function updateBaseViaParam() {
+      if (baseParams) {
+        console.log("BASE PARAM DETECTED: ", baseParams);
+        dispatch(setBaseTimezone(baseParams));
       }
-    }
-  }, [offsetParams, dispatch]);
+    },
+    [baseParams, dispatch]
+  );
+
+  useEffect(
+    function updateTrackedViaParams() {
+      if (trackedParams) {
+        console.log("TRACKED PARAM DETECTED: ", trackedParams);
+        const trackedParamsAray = trackedParams.split(",");
+        const trackedParamsToBeRendered = trackedParamsAray.map(
+          (timezone, index) => ({ timezone, id: index + 1 })
+        );
+        dispatch(setTrackedTimezones(trackedParamsToBeRendered));
+      }
+    },
+    [trackedParams, dispatch]
+  );
+
+  useEffect(
+    function updateOffsetViaParam() {
+      if (offsetParams) {
+        console.log("OFFSET PARAM DETECTED: ", offsetParams);
+        // Check if it's a number
+        if (!isNaN(offsetParams)) {
+          dispatch(setOffset(offsetParams));
+          dispatch(setShareOffset(Number(offsetParams)));
+        }
+      }
+    },
+    [offsetParams, dispatch]
+  );
 
   // Fetch array of timezones
-  useEffect(function fetchAllTimezones() {
-    dispatch(fetchTimezones());
-  }, [dispatch]);
+  useEffect(
+    function fetchAllTimezones() {
+      dispatch(fetchTimezones());
+    },
+    [dispatch]
+  );
 
   let trackedTimezones = tracked.map((item, index) => (
     <Grid item xs={12} md={6} key={index}>
       <TimeCard
         timezone={item.timezone}
         TCId={item.id}
+        reset={resetTimezone}
+        setReset={setTimezone}
       />
     </Grid>
   ));
@@ -94,14 +119,15 @@ function App(props) {
   return (
     <ThemeProvider theme={theme}>
       <Box pt={10} className="container">
-        <Navbar />
+        <Navbar reset={resetTimezone} setReset={setTimezone} timezone={base} />
 
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Container>
-
             <TimeCard
               base={true}
               timezone={base}
+              reset={resetTimezone}
+              setReset={setTimezone}
             />
 
             <Box mt={4}>
@@ -111,11 +137,9 @@ function App(props) {
             </Box>
 
             <AddTimezone />
-
           </Container>
         </MuiPickersUtilsProvider>
       </Box>
-
     </ThemeProvider>
   );
 }
