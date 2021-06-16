@@ -28,6 +28,7 @@ import momentTZ from "moment-timezone";
 import accurateInterval from "accurate-interval";
 import { makeStyles } from "@material-ui/core";
 
+// Components
 import UpdateModal from "./UpdateModal";
 
 const formatTitle = (tz) => {
