@@ -39,6 +39,8 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Navbar from "./components/Navbar";
 import TimeCard from "./components/TimeCard";
 import AddTimezone from "./components/AddTimezone";
+import { useState } from "react";
+
 
 import { useState } from "react";
 import SearchTimezone from "./components/SearchTimezone";
@@ -110,7 +112,6 @@ function App(props) {
 
   let trackedTimezones = tracked.map((item, index) => (
     <Grid item xs={12} md={6} key={index}>
-
       <TimeCard
         timezone={item.timezone}
         TCId={item.id}
@@ -118,9 +119,6 @@ function App(props) {
         setReset={setTimezone}
         country={item.timezone.split("/")}
       />
-
-      <TimeCard timezone={item.timezone} TCId={item.id} />
-
     </Grid>
   ));
 
@@ -131,21 +129,17 @@ function App(props) {
         <SearchTimezone />
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Container>
-
             <TimeCard
               base={true}
               timezone={base}
               reset={resetTimezone}
               setReset={setTimezone}
             />
-            <TimeCard base={true} timezone={base} />
-
             <Box mt={4}>
               <Grid container spacing={6}>
                 {trackedTimezones}
               </Grid>
             </Box>
-
             <AddTimezone />
           </Container>
         </MuiPickersUtilsProvider>

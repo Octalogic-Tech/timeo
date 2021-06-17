@@ -47,25 +47,13 @@ const formatTitle = (tz) => {
   return "";
 };
 
-const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
+const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   // Style Hook
   const useStyles = makeStyles((theme) => ({
     cardStyle: {
       boxShadow: "3px 3px 35px rgba(0, 0, 0, 0.5)",
       borderRadius: "20px",
     },
-    removeCard: {
-      cursor: "pointer",
-      "&:hover": {
-        color: "red",
-      },
-    },
-  }));
-
-const TimeCard = ({ timezone, base, TCId }) => {
-  // Style Hook
-
-  const useStyles = makeStyles((theme) => ({
     removeCard: {
       cursor: "pointer",
       "&:hover": {
@@ -112,6 +100,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
     dispatch(setOffset(diff));
     dispatch(setShareOffset(shareOffset + diff));
     setReset(true);
+
     // Didnt update value here as it would
     // effectively update time twice
   };
@@ -181,8 +170,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
-
+  
   // Remove Card
   const removeCardHandler = (id) => {
     dispatch(removeTrackedTimezone(id));
