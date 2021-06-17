@@ -45,7 +45,6 @@ import { useState } from "react";
 import { useState } from "react";
 import SearchTimezone from "./components/SearchTimezone";
 
-
 const theme = createMuiTheme(themeConfig);
 
 // A custom hook that builds on useLocation to parse

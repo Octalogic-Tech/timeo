@@ -30,6 +30,7 @@ const UpdateModal = ({ open, handleOpen, handleClose, base, add, TCId }) => {
 
   const [textFieldValue, setTextfieldValue] = useState("");
   const allTimezones = useSelector(getTimezones);
+  const regionArr = allTimezones.map((e) => e.name);
 
   const onTimezoneChange = (event, values) => {
     setTextfieldValue(values);
@@ -78,7 +79,7 @@ const UpdateModal = ({ open, handleOpen, handleClose, base, add, TCId }) => {
           Start typing the name of the city whose timezone you would like to add
         </Typography>
         <Autocomplete
-          options={allTimezones}
+          options={regionArr}
           getOptionLabel={(option) => option}
           fullWidth={true}
           onChange={onTimezoneChange}

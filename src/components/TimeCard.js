@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { getAllInfoByISO } from "iso-country-currency";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +14,13 @@ import {
 
 // Redux Selectors
 import { getTimeFormat } from "../redux/selectors/uiSelectors";
+import {
+  getBaseTimezone,
+  getOffset,
+  getShareOffset,
+  getTimezones,
+} from "../redux/selectors/dataSelectors";
+
 import { getOffset, getShareOffset } from "../redux/selectors/dataSelectors";
 
 // MUI
@@ -62,9 +71,12 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     },
   }));
 
-  const classes = useStyles();
+const classes = useStyles();
+
   // For modal toggle
+
   const [open, setOpen] = useState(false);
+  const [country, setCountry] = useState([]);
 
   const [abbreviation, setAbbreviation] = useState(
     momentTZ.tz(timezone).zoneAbbr()
@@ -75,6 +87,9 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   const offset = useSelector(getOffset);
   const AM_PM = useSelector(getTimeFormat);
   const shareOffset = useSelector(getShareOffset);
+  const allTimezones = useSelector(getTimezones);
+  const baseTime = useSelector(getBaseTimezone);
+
   const dispatch = useDispatch();
   // The name of the place
   let title = formatTitle(timezone);
@@ -100,10 +115,22 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     dispatch(setOffset(diff));
     dispatch(setShareOffset(shareOffset + diff));
     setReset(true);
-
     // Didnt update value here as it would
     // effectively update time twice
   };
+
+
+  // Country code
+  useEffect(() => {
+    const getCountries = allTimezones.filter((obj) => obj.name === timezone);
+    const countryData = getCountries.map((item) => {
+      const countryInfo = getAllInfoByISO(item.data.country);
+      return countryInfo;
+    });
+    setCountry(countryData);
+  }, [allTimezones, timezone, country.length]);
+
+  console.log(country);
 
   useEffect(
     function updateTimeWithOffset() {
@@ -115,6 +142,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     [offset, time, dispatch]
   );
 
+  // Auto update time
   useEffect(
     function updateTimeEveryMinute() {
       if (!reset) {
@@ -200,6 +228,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
               <Typography variant="body1" component="p">
                 {abbreviation || "UTC"}
               </Typography>
+
               <Typography
                 color={night ? "inherit" : "textSecondary"}
                 variant="body2"
@@ -207,6 +236,11 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
               >
                 UTC {utcOffset || "Loading"}
               </Typography>
+              {country.map((item) => (
+                <Typography variant="body1" component="p">
+                  {item.currency || "N/A"}
+                </Typography>
+              ))}
             </Box>
           </Grid>
           <Grid

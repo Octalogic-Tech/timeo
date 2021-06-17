@@ -26,7 +26,10 @@ function SearchTimezone() {
   const classes = useStyles();
 
   // Redux selectors
-  const timezones = useSelector(getTimezones);
+
+  const timezone = useSelector(getTimezones);
+  const regionNameArr = timezone.map((e) => e.name);
+
   const trackedTimezones = useSelector(getTrackedTimezones);
   const dispatch = useDispatch();
   //   HANDLERS
@@ -35,7 +38,7 @@ function SearchTimezone() {
   };
   return (
     <Autocomplete
-      options={timezones}
+      options={regionNameArr}
       className={classes.searchContainer}
       style={{ width: 800 }}
       onChange={handleTimezoneChange}
