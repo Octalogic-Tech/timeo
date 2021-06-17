@@ -31,6 +31,8 @@ import { makeStyles } from "@material-ui/core";
 // Components
 import UpdateModal from "./UpdateModal";
 
+// Packages
+
 const formatTitle = (tz) => {
   if (tz) {
     // Splits timezone string
@@ -46,11 +48,12 @@ const formatTitle = (tz) => {
 };
 
 const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
-
-const TimeCard = ({ timezone, base, TCId }) => {
   // Style Hook
-
   const useStyles = makeStyles((theme) => ({
+    cardStyle: {
+      boxShadow: "3px 3px 35px rgba(0, 0, 0, 0.5)",
+      borderRadius: "20px",
+    },
     removeCard: {
       cursor: "pointer",
       "&:hover": {
@@ -75,7 +78,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const dispatch = useDispatch();
   // The name of the place
   let title = formatTitle(timezone);
-
   let night = false;
   let cardStyles = {};
   let borderStyle = { borderRight: "1px solid #000" };
@@ -97,7 +99,8 @@ const TimeCard = ({ timezone, base, TCId }) => {
     let diff = value.diff(time);
     dispatch(setOffset(diff));
     dispatch(setShareOffset(shareOffset + diff));
-    setReset(!reset);
+    setReset(true);
+
     // Didnt update value here as it would
     // effectively update time twice
   };
@@ -114,7 +117,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
 
   useEffect(
     function updateTimeEveryMinute() {
-      if (reset) {
+      if (!reset) {
         const interval = accurateInterval(() => {
           let updatedTime = moment(time.add(1, "m"));
           setTime(updatedTime);
@@ -160,7 +163,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
   );
 
   // Handlers
-
   const handleOpen = () => {
     setOpen(true);
   };
@@ -168,7 +170,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   // Remove Card
   const removeCardHandler = (id) => {
     dispatch(removeTrackedTimezone(id));
@@ -178,8 +180,10 @@ const TimeCard = ({ timezone, base, TCId }) => {
     console.log(id);
     dispatch(removeTrackedTimezone(id));
   };
+  
+  
   return (
-    <Card style={cardStyles}>
+    <Card style={cardStyles} className={classes.cardStyle}>
       <CardContent>
         <Grid container align="center">
           <Grid item xs={12} sm={6} onClick={handleOpen} style={borderStyle}>

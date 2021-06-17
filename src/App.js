@@ -42,6 +42,10 @@ import AddTimezone from "./components/AddTimezone";
 import { useState } from "react";
 
 
+import { useState } from "react";
+import SearchTimezone from "./components/SearchTimezone";
+
+
 const theme = createMuiTheme(themeConfig);
 
 // A custom hook that builds on useLocation to parse
@@ -113,8 +117,8 @@ function App(props) {
         TCId={item.id}
         reset={resetTimezone}
         setReset={setTimezone}
+        country={item.timezone.split("/")}
       />
-      <TimeCard timezone={item.timezone} TCId={item.id} />
     </Grid>
   ));
 
@@ -122,7 +126,7 @@ function App(props) {
     <ThemeProvider theme={theme}>
       <Box pt={10} className="container">
         <Navbar reset={resetTimezone} setReset={setTimezone} timezone={base} />
-
+        <SearchTimezone />
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Container>
             <TimeCard
@@ -131,14 +135,11 @@ function App(props) {
               reset={resetTimezone}
               setReset={setTimezone}
             />
-            <TimeCard base={true} timezone={base} />
-
             <Box mt={4}>
               <Grid container spacing={6}>
                 {trackedTimezones}
               </Grid>
             </Box>
-
             <AddTimezone />
           </Container>
         </MuiPickersUtilsProvider>
