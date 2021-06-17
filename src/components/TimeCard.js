@@ -57,6 +57,7 @@ const formatTitle = (tz) => {
 };
 
 const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
+
   // Style Hook
   const useStyles = makeStyles((theme) => ({
     cardStyle: {
@@ -72,6 +73,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   }));
 
 const classes = useStyles();
+
 
 const TimeCard = ({ timezone, base, TCId }) => {
   // Style Hook
@@ -132,6 +134,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
     // effectively update time twice
   };
 
+
   // Country code
   useEffect(() => {
     const getCountries = allTimezones.filter((obj) => obj.name === timezone);
@@ -144,22 +147,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
 
   console.log(country);
 
-  // Exchange Rate
-  // let accessKey = process.env.REACT_APP_CURRENCY_AP_API_KEY;
-  // useEffect(() => {
-  //   const baseCountry = allTimezones.filter((obj) => obj.name === baseTime);
-  //   const baseCountryCode = baseCountry[0].data.country;
-  //   const fetchCurrency = async () => {
-  //     country.map((item)=>{
-  //     const data = await axios.get(
-  //       `https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=${baseCountryCode}&to_symbol=${country}&apikey=${accessKey}`
-  //     );
-  //     console.log(data);
-  //   };
-  //   fetchCurrency();
-  // }, [accessKey, allTimezones, baseTime, country]);
-
-  // Updated Time
   useEffect(
     function updateTimeWithOffset() {
       let newTime = time.add(offset, "ms");
@@ -173,7 +160,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   // Auto update time
   useEffect(
     function updateTimeEveryMinute() {
-      if (!reset) {
+      if (reset) {
         const interval = accurateInterval(() => {
           let updatedTime = moment(time.add(1, "m"));
           setTime(updatedTime);
