@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getAllInfoByISO } from "iso-country-currency";
+
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -19,6 +20,8 @@ import {
   getShareOffset,
   getTimezones,
 } from "../redux/selectors/dataSelectors";
+
+import { getOffset, getShareOffset } from "../redux/selectors/dataSelectors";
 
 // MUI
 import { DateTimePicker } from "@material-ui/pickers";
@@ -68,10 +71,23 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     },
   }));
 
-  // console.log(countryToISO("america"));
+const classes = useStyles();
+
+const TimeCard = ({ timezone, base, TCId }) => {
+  // Style Hook
+
+  const useStyles = makeStyles((theme) => ({
+    removeCard: {
+      cursor: "pointer",
+      "&:hover": {
+        color: "red",
+      },
+    },
+  }));
 
   const classes = useStyles();
-  // States
+  // For modal toggle
+
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState([]);
 
@@ -88,7 +104,6 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   const baseTime = useSelector(getBaseTimezone);
 
   const dispatch = useDispatch();
-
   // The name of the place
   let title = formatTitle(timezone);
   let night = false;
@@ -167,6 +182,30 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
       }
     },
     [reset, time]
+    // Didnt update value here as it would
+    // effectively update time twice
+  };
+
+  useEffect(
+    function updateTimeWithOffset() {
+      let newTime = time.add(offset, "ms");
+      setTime(newTime);
+      // Incase of re-renders
+      dispatch(setOffset(0));
+    },
+    [offset, time, dispatch]
+  );
+
+  useEffect(
+    function updateTimeEveryMinute() {
+      const interval = accurateInterval(() => {
+        let updatedTime = moment(time.add(1, "m"));
+        setTime(updatedTime);
+      }, 60000);
+
+      return () => interval.clear();
+    },
+    [time]
   );
 
   // Update time card once timezone changes
@@ -178,6 +217,8 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     },
     [timezone]
   );
+
+  // Handlers
 
   const handleOpen = () => {
     setOpen(true);
@@ -192,6 +233,10 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
     dispatch(removeTrackedTimezone(id));
   };
 
+  const removeCardHandler = (id) => {
+    console.log(id);
+    dispatch(removeTrackedTimezone(id));
+  };
   return (
     <Card style={cardStyles} className={classes.cardStyle}>
       <CardContent>
@@ -207,7 +252,6 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
               <Typography variant={base ? "h4" : "h5"}>
                 {title || "UTC"}
               </Typography>
-
               <Typography variant="body1" component="p">
                 {abbreviation || "UTC"}
               </Typography>
