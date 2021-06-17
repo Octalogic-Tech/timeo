@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import axios from "axios";
+import { getAllInfoByISO } from "iso-country-currency";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -12,7 +13,12 @@ import {
 
 // Redux Selectors
 import { getTimeFormat } from "../redux/selectors/uiSelectors";
-import { getOffset, getShareOffset } from "../redux/selectors/dataSelectors";
+import {
+  getBaseTimezone,
+  getOffset,
+  getShareOffset,
+  getTimezones,
+} from "../redux/selectors/dataSelectors";
 
 // MUI
 import { DateTimePicker } from "@material-ui/pickers";
@@ -47,7 +53,7 @@ const formatTitle = (tz) => {
   return "";
 };
 
-const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
+const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   // Style Hook
   const useStyles = makeStyles((theme) => ({
     cardStyle: {
@@ -65,8 +71,9 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
   // console.log(countryToISO("america"));
 
   const classes = useStyles();
-  // For modal toggle
+  // States
   const [open, setOpen] = useState(false);
+  const [country, setCountry] = useState([]);
 
   const [abbreviation, setAbbreviation] = useState(
     momentTZ.tz(timezone).zoneAbbr()
@@ -77,6 +84,9 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
   const offset = useSelector(getOffset);
   const AM_PM = useSelector(getTimeFormat);
   const shareOffset = useSelector(getShareOffset);
+  const allTimezones = useSelector(getTimezones);
+  const baseTime = useSelector(getBaseTimezone);
+
   const dispatch = useDispatch();
 
   // The name of the place
@@ -107,6 +117,34 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
     // effectively update time twice
   };
 
+  // Country code
+  useEffect(() => {
+    const getCountries = allTimezones.filter((obj) => obj.name === timezone);
+    const countryData = getCountries.map((item) => {
+      const countryInfo = getAllInfoByISO(item.data.country);
+      return countryInfo;
+    });
+    setCountry(countryData);
+  }, [allTimezones, timezone, country.length]);
+
+  console.log(country);
+
+  // Exchange Rate
+  // let accessKey = process.env.REACT_APP_CURRENCY_AP_API_KEY;
+  // useEffect(() => {
+  //   const baseCountry = allTimezones.filter((obj) => obj.name === baseTime);
+  //   const baseCountryCode = baseCountry[0].data.country;
+  //   const fetchCurrency = async () => {
+  //     country.map((item)=>{
+  //     const data = await axios.get(
+  //       `https://www.alphavantage.co/query?function=FX_WEEKLY&from_symbol=${baseCountryCode}&to_symbol=${country}&apikey=${accessKey}`
+  //     );
+  //     console.log(data);
+  //   };
+  //   fetchCurrency();
+  // }, [accessKey, allTimezones, baseTime, country]);
+
+  // Updated Time
   useEffect(
     function updateTimeWithOffset() {
       let newTime = time.add(offset, "ms");
@@ -117,6 +155,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
     [offset, time, dispatch]
   );
 
+  // Auto update time
   useEffect(
     function updateTimeEveryMinute() {
       if (!reset) {
@@ -172,6 +211,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
               <Typography variant="body1" component="p">
                 {abbreviation || "UTC"}
               </Typography>
+
               <Typography
                 color={night ? "inherit" : "textSecondary"}
                 variant="body2"
@@ -179,6 +219,11 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset, country }) => {
               >
                 UTC {utcOffset || "Loading"}
               </Typography>
+              {country.map((item) => (
+                <Typography variant="body1" component="p">
+                  {item.currency || "N/A"}
+                </Typography>
+              ))}
             </Box>
           </Grid>
           <Grid
