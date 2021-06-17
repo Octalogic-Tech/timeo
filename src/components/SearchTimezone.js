@@ -26,6 +26,7 @@ function SearchTimezone() {
   const classes = useStyles();
 
   // Redux selectors
+
   const timezone = useSelector(getTimezones);
   const regionNameArr = timezone.map((e) => e.name);
 

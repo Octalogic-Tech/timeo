@@ -57,7 +57,6 @@ const formatTitle = (tz) => {
 };
 
 const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
-
   // Style Hook
   const useStyles = makeStyles((theme) => ({
     cardStyle: {
@@ -74,20 +73,6 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
 
 const classes = useStyles();
 
-
-const TimeCard = ({ timezone, base, TCId }) => {
-  // Style Hook
-
-  const useStyles = makeStyles((theme) => ({
-    removeCard: {
-      cursor: "pointer",
-      "&:hover": {
-        color: "red",
-      },
-    },
-  }));
-
-  const classes = useStyles();
   // For modal toggle
 
   const [open, setOpen] = useState(false);
@@ -160,7 +145,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   // Auto update time
   useEffect(
     function updateTimeEveryMinute() {
-      if (reset) {
+      if (!reset) {
         const interval = accurateInterval(() => {
           let updatedTime = moment(time.add(1, "m"));
           setTime(updatedTime);
@@ -206,7 +191,6 @@ const TimeCard = ({ timezone, base, TCId }) => {
   );
 
   // Handlers
-
   const handleOpen = () => {
     setOpen(true);
   };
@@ -214,7 +198,7 @@ const TimeCard = ({ timezone, base, TCId }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   // Remove Card
   const removeCardHandler = (id) => {
     dispatch(removeTrackedTimezone(id));
@@ -224,6 +208,8 @@ const TimeCard = ({ timezone, base, TCId }) => {
     console.log(id);
     dispatch(removeTrackedTimezone(id));
   };
+  
+  
   return (
     <Card style={cardStyles} className={classes.cardStyle}>
       <CardContent>
