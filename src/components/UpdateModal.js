@@ -82,7 +82,9 @@ const UpdateModal = ({ open, handleOpen, handleClose, base, add, TCId }) => {
           getOptionLabel={(option) => option}
           fullWidth={true}
           onChange={onTimezoneChange}
-          renderInput={(params) => <TextField {...params} label="City Name" />}
+          renderInput={(params) => (
+            <TextField {...params} label="City Name" required />
+          )}
         />
         <Box
           display="flex"

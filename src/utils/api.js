@@ -1,5 +1,5 @@
-import axios from 'axios'
+import axios from "axios";
 
 export const fetchData = () => {
-    return axios.get('https://worldtimeapi.org/api/timezone');
+  return axios.get("http://worldtimeapi.org/api/timezone");
 };

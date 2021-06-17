@@ -45,6 +45,8 @@ const formatTitle = (tz) => {
   return "";
 };
 
+const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
+
 const TimeCard = ({ timezone, base, TCId }) => {
   // Style Hook
 
@@ -95,6 +97,32 @@ const TimeCard = ({ timezone, base, TCId }) => {
     let diff = value.diff(time);
     dispatch(setOffset(diff));
     dispatch(setShareOffset(shareOffset + diff));
+    setReset(!reset);
+    // Didnt update value here as it would
+    // effectively update time twice
+  };
+
+  useEffect(
+    function updateTimeWithOffset() {
+      let newTime = time.add(offset, "ms");
+      setTime(newTime);
+      // Incase of re-renders
+      dispatch(setOffset(0));
+    },
+    [offset, time, dispatch]
+  );
+
+  useEffect(
+    function updateTimeEveryMinute() {
+      if (reset) {
+        const interval = accurateInterval(() => {
+          let updatedTime = moment(time.add(1, "m"));
+          setTime(updatedTime);
+        }, 60000);
+        return () => interval.clear();
+      }
+    },
+    [reset, time]
     // Didnt update value here as it would
     // effectively update time twice
   };
@@ -139,6 +167,11 @@ const TimeCard = ({ timezone, base, TCId }) => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  // Remove Card
+  const removeCardHandler = (id) => {
+    dispatch(removeTrackedTimezone(id));
   };
 
   const removeCardHandler = (id) => {
