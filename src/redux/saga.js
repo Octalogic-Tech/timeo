@@ -2,11 +2,9 @@ import { call, put, takeLatest } from "redux-saga/effects";
 
 import { setTimezones } from "./actions/dataActions";
 
-import { fetchData } from "../utils/api";
 import { getAllTimezones } from "countries-and-timezones";
 import { FETCH_TIMEZONES } from "./actionTypes";
 
-console.log(fetchData());
 function* fetchTimezoneSaga(action) {
   try {
     const data = yield call(getAllTimezones);
