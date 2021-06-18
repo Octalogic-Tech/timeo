@@ -17,10 +17,9 @@ function SearchTimezone() {
     searchContainer: {
       margin: "30px auto",
     },
-    searchBar: {
-      marginBottom: "30px",
-      outline: "none",
+    input: {
       background: "#ffffff",
+      marginBottom: "30px",
     },
   }));
   const classes = useStyles();
@@ -29,12 +28,13 @@ function SearchTimezone() {
 
   const timezone = useSelector(getTimezones);
   const regionNameArr = timezone.map((e) => e.name);
-
   const trackedTimezones = useSelector(getTrackedTimezones);
   const dispatch = useDispatch();
   //   HANDLERS
   const handleTimezoneChange = (event, value) => {
-    dispatch(addTrackedTimezone(trackedTimezones.length + 1, value));
+    if (value !== null) {
+      dispatch(addTrackedTimezone(trackedTimezones.length + 1, value));
+    }
   };
   return (
     <Autocomplete
@@ -48,7 +48,7 @@ function SearchTimezone() {
           {...timezone}
           label="Search Timezone"
           variant="outlined"
-          className={classes.searchBar}
+          className={classes.input}
         />
       )}
     />

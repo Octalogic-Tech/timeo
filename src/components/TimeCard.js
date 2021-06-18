@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { getAllInfoByISO } from "iso-country-currency";
 
 // Redux
@@ -15,7 +14,6 @@ import {
 // Redux Selectors
 import { getTimeFormat } from "../redux/selectors/uiSelectors";
 import {
-  getBaseTimezone,
   getOffset,
   getShareOffset,
   getTimezones,
@@ -88,8 +86,6 @@ const classes = useStyles();
   const AM_PM = useSelector(getTimeFormat);
   const shareOffset = useSelector(getShareOffset);
   const allTimezones = useSelector(getTimezones);
-  const baseTime = useSelector(getBaseTimezone);
-
   const dispatch = useDispatch();
   // The name of the place
   let title = formatTitle(timezone);
@@ -130,7 +126,6 @@ const classes = useStyles();
     setCountry(countryData);
   }, [allTimezones, timezone, country.length]);
 
-  console.log(country);
 
   useEffect(
     function updateTimeWithOffset() {
@@ -236,8 +231,8 @@ const classes = useStyles();
               >
                 UTC {utcOffset || "Loading"}
               </Typography>
-              {country.map((item) => (
-                <Typography variant="body1" component="p">
+              {country.map((item, index) => (
+                <Typography variant="body1" component="p" key={index}>
                   {item.currency || "N/A"}
                 </Typography>
               ))}
@@ -268,6 +263,7 @@ const classes = useStyles();
                 format={!AM_PM ? "hh:mm A" : "HH:mm"}
                 TextFieldComponent={TimeTextField}
               />
+
               <br />
               <DateTimePicker
                 value={time}

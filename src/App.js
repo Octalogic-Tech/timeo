@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 
@@ -30,7 +29,6 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-// import Typography from '@material-ui/core/Typography';
 
 // For Date Picker
 import MomentUtils from "@date-io/moment";
@@ -44,6 +42,8 @@ import { useState } from "react";
 
 import { useState } from "react";
 import SearchTimezone from "./components/SearchTimezone";
+import axios from "axios";
+import { getCountry } from "countries-and-timezones";
 
 const theme = createMuiTheme(themeConfig);
 
@@ -54,7 +54,12 @@ function useQuery() {
 }
 
 function App(props) {
+  // States
   const [resetTimezone, setTimezone] = useState(false);
+  const [lat, setLat] = useState();
+  const [lng, setLng] = useState();
+  const [baseLoc, setBaseLoc] = useState("");
+
   const base = useSelector(getBaseTimezone);
   const tracked = useSelector(getTrackedTimezones);
   const dispatch = useDispatch();
@@ -62,15 +67,51 @@ function App(props) {
   const baseParams = useQuery().get("base");
   const trackedParams = useQuery().get("tracked");
   const offsetParams = useQuery().get("offset");
+  // Geolocation
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition((position) => {
+        setLat(position.coords.latitude);
+        setLng(position.coords.longitude);
+        console.log(position.coords.latitude);
+      });
+    } else {
+      console.log("Not Available");
+    }
+    const latlng = lat + "," + lng;
+    if (lat !== undefined && lng !== undefined) {
+      const reverseGeo = async () => {
+        const location = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json`,
+          {
+            params: {
+              latlng: latlng,
+              key: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
+            },
+          }
+        );
+
+        if (location) {
+          const components = location.data.results[0].address_components;
+          const filterData = components.filter((e) => e.types[0] === "country");
+          const countryCode = filterData[0].short_name;
+          const countryTimezone = getCountry(countryCode);
+          setBaseLoc(countryTimezone.timezones[0]);
+        }
+      };
+      reverseGeo();
+    }
+    //Reverse geocoding
+  }, [lat, lng]);
 
   useEffect(
     function updateBaseViaParam() {
       if (baseParams) {
         console.log("BASE PARAM DETECTED: ", baseParams);
-        dispatch(setBaseTimezone(baseParams));
+        dispatch(setBaseTimezone(baseLoc));
       }
     },
-    [baseParams, dispatch]
+    [baseLoc, dispatch, baseParams]
   );
 
   useEffect(
@@ -116,7 +157,6 @@ function App(props) {
         TCId={item.id}
         reset={resetTimezone}
         setReset={setTimezone}
-        country={item.timezone.split("/")}
       />
     </Grid>
   ));

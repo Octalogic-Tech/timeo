@@ -2,7 +2,7 @@ import * as actions from "../actionTypes";
 
 const initialState = {
   timezones: [],
-  baseTimezone: "Asia/Kolkata",
+  baseTimezone: "",
   trackedTimezones: [],
   offset: 0,
   shareOffset: 0,
