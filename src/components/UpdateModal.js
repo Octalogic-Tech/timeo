@@ -84,7 +84,12 @@ const UpdateModal = ({ open, handleOpen, handleClose, base, add, TCId }) => {
           fullWidth={true}
           onChange={onTimezoneChange}
           renderInput={(params) => (
-            <TextField {...params} label="City Name" required />
+            <TextField
+              {...params}
+              label="City Name"
+              required
+              className="select_city"
+            />
           )}
         />
         <Box

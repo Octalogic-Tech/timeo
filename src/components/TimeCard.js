@@ -256,6 +256,7 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
               />
             </Box>
             <ClearIcon
+              id={TCId}
               className={classes.removeCard}
               onClick={() => removeCardHandler(TCId)}
             />
