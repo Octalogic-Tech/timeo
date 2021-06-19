@@ -187,7 +187,11 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
   };
 
   return (
-    <Card style={cardStyles} className={classes.cardStyle}>
+    <Card
+      style={cardStyles}
+      className={classes.cardStyle}
+      id={`timezone_card_${TCId}`}
+    >
       <CardContent>
         <Grid container align="center">
           <Grid item xs={12} sm={6} onClick={handleOpen} style={borderStyle}>
@@ -255,11 +259,15 @@ const TimeCard = ({ timezone, base, TCId, reset, setReset }) => {
                 TextFieldComponent={DateTextField}
               />
             </Box>
-            <ClearIcon
-              id={TCId}
-              className={classes.removeCard}
-              onClick={() => removeCardHandler(TCId)}
-            />
+            {TCId === 0 ? (
+              ""
+            ) : (
+              <ClearIcon
+                id={TCId}
+                className={`${classes.removeCard} remove_card`}
+                onClick={() => removeCardHandler(TCId)}
+              />
+            )}
           </Grid>
         </Grid>
       </CardContent>
