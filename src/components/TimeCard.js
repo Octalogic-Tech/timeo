@@ -206,7 +206,11 @@ const classes = useStyles();
   
   
   return (
-    <Card style={cardStyles} className={classes.cardStyle}>
+    <Card
+      style={cardStyles}
+      className={classes.cardStyle}
+      id={`timezone_card_${TCId}`}
+    >
       <CardContent>
         <Grid container align="center">
           <Grid item xs={12} sm={6} onClick={handleOpen} style={borderStyle}>
@@ -273,10 +277,15 @@ const classes = useStyles();
                 TextFieldComponent={DateTextField}
               />
             </Box>
-            <ClearIcon
-              className={classes.removeCard}
-              onClick={() => removeCardHandler(TCId)}
-            />
+            {TCId === 0 ? (
+              ""
+            ) : (
+              <ClearIcon
+                id={TCId}
+                className={`${classes.removeCard} remove_card`}
+                onClick={() => removeCardHandler(TCId)}
+              />
+            )}
           </Grid>
         </Grid>
       </CardContent>
